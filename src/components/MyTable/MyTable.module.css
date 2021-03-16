@@ -1,0 +1,14 @@
+.tableWrap {
+  margin: 20px 10px;
+  overflow-x: scroll;
+  background-color: #d4d6b9;
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0px 0px 7px 2px #66717e;
+  padding: 20px;
+}
+.cells {
+  text-align: center;
+  padding: 0.5rem 0;
+  border: solid 1px black;
+}

@@ -1,0 +1,39 @@
+.modTableDiv{
+    margin:20px 10px;
+    background-color: #D4D6B9;
+    border-radius: 5px;
+    padding:10px;
+    border:none;
+    box-shadow: 0px 0px 7px 2px #66717E;
+    padding:10px;
+    overflow: auto;
+}
+
+.resetSave{
+    float:right;
+}
+
+.saveButton{
+    background-color: #383B53;
+    font-weight: bold;
+    color:#d2cba3;
+    display: inline-block;
+    padding:5px 15px;
+    border-radius:5px;
+    margin-top:15px;
+    box-shadow: 0px 0px 5px 1px #66717E;
+    margin:0 20px;
+    cursor:pointer;
+}
+.resetButton{
+    background-color:  #D1CAA1;
+    font-weight: bold;
+    color:#383B53;
+    display: inline-block;
+    padding:5px 15px;
+    border-radius:5px;
+    margin-top:15px;
+    box-shadow: 0px 0px 5px 1px #66717E;
+    margin:0 20px;
+    cursor:pointer;
+}

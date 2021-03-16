@@ -1,0 +1,64 @@
+.tutorialDiv{
+    width:calc(100% - 30px);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    margin:auto;
+}
+
+.tutorialStep{
+    position:relative;
+    background-color: #D4D6B9;
+    border-radius: 5px;
+    border:none;
+    box-shadow: 0px 0px 7px 2px #66717E;
+    margin:20px 20px;
+    width:calc(33.3333vw - 40px);
+    padding:25px;
+    transition: 0.2s;
+}
+
+.tutorialStep:hover{
+    transform: scale(1.05);
+}
+
+
+.stepTitle{
+    margin: 5px 0;
+}
+
+ul {
+    list-style: none;
+}
+
+.getModeTut{
+    padding:10px 0;
+    position:relative;
+}
+
+li.getModeTut:before{
+    content: '';
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    background-image: url('/src/assets/icons/curve-arrow.png');
+    background-size: cover;
+    background-position: center;
+    left: -30px;
+    top: 16px;  
+    transform: translateY(-50%);
+}
+
+.scrollDownContainer{
+    margin:auto;
+    width:30px;
+    height: 30px;
+    transform: rotate(90deg);
+    position:relative;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.scrollDownContainer:hover{
+    transform:scale(1.1)rotate(90deg);
+}
