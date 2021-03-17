@@ -20,14 +20,6 @@ export const removeKeys = (indexToRemove) => {
     }
 }
 
-export const addKeys = (keyToAdd, indexToAdd) => {
-    return{
-        type:"ADD",
-        keyToAdd,
-        indexToAdd,
-    }
-}
-
 export const selectCol = (colToSelect) => {
     console.log(`seleziono colonna ${colToSelect}`)
     return{
@@ -42,3 +34,16 @@ export const deselectCol = (colToDeselect) => {
     }
 }
 
+export const hideCol = (colToHideId) => {
+    return {
+        type: "HIDE",
+        colToHideId,
+    }
+}
+
+export const showCol = (colToShowId) => {
+    return {
+        type: "SHOW",
+        colToShowId,
+    }
+}

@@ -17,10 +17,7 @@ function MyTable() {
         [allColumns]
     )
 
-    React.useEffect(()=>{
-        console.log('ciao');
-        console.log(allColumns);
-    }, [])
+    let hiddenColumns; 
 
     const {
         getTableProps,
@@ -37,15 +34,29 @@ function MyTable() {
         previousPage,
         setPageSize,
         state: { pageIndex, pageSize },
+        setHiddenColumns,
     } = useTable(
         {
             columns,
             data,
-            initialState: { pageIndex: 0 },
+            initialState: { pageIndex: 0, hiddenColumns: columns.filter(column => !column.show).map(column => column.id) },
         },
         useSortBy,
         usePagination,
     )
+
+    React.useEffect(
+        () => {
+            hiddenColumns = [];
+            for (let col of columns) {
+                if (col.show === false) {
+                    hiddenColumns.push(col.id);
+                }
+            }
+          setHiddenColumns(hiddenColumns);
+        },
+        [columns]
+      );
 
     // Render the UI for your table
     return (

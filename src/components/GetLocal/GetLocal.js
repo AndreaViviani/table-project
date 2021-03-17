@@ -32,12 +32,11 @@ function GetLocal() {
     const createKeys = (table) => {
         const items = Object.keys(table[0]).map((key) => {
             return {
-                Header: 'ciao', //<><p>{key}</p> {
-                    //!checkIfColumnIsSelected(key) &&
-                    //<button className={style.buttonSelect} onClick={e => { selectColClick(e, key) }}>Select</button>
-                //} </>,
+                Header:<p>{key}</p> ,
                 accessor: parseInt(key, 10) || key,
                 key: key,
+                show: true,
+                id: key,
             }
         }); 
         return items;

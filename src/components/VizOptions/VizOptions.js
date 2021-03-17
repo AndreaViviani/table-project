@@ -1,29 +1,23 @@
 import React from "react";
 import style from "./VizOption.module.css";
 import { useSelector, useDispatch } from "react-redux";
-import { loadKeys, addKeys, removeKeys, selectCol, deselectCol } from "../../reduxStateManager/actions";
+import { loadKeys, hideCol, showCol, selectCol, deselectCol } from "../../reduxStateManager/actions";
 
 function VizOptions() {
 
-    /*in questo componente voglio:
-    - recuperare lo stato (globale) iniziale della tabella, da cui far partire la visualizzazione e su cui posso poi fare operazioni.
-    - fare uno stato iniziale (locale) delle keys originali. 
-    - a partire dallo stato iniziale delle keys voglio poter fare delle operazioni, e inviarlo ad uno stato globale delle keys definive . 
-    */
+
     //importo dispatcher
     const dispatch = useDispatch();
 
     const dispatchKeys = (keysToLoad) => {
-        console.log(keysToLoad);
         dispatch(loadKeys(keysToLoad));
     }
-    const dispatchAddKeys = (keyToAdd, indexToAdd) => {
-        dispatch(addKeys(keyToAdd, indexToAdd))
+    const dispatchHideCol = (colToShowId) => {
+        dispatch(hideCol(colToShowId));
     }
-    const dispatchRemoveKeys = (indexToRemove) => {
-        dispatch(removeKeys(indexToRemove))
+    const dispatchShowCol = (colToShowId) => {
+        dispatch(showCol(colToShowId));
     }
-
     const dispatchSelectCol = (colToSelect) => {
         dispatch(selectCol(colToSelect))
     };
@@ -42,37 +36,43 @@ function VizOptions() {
     const selectedCol = useSelector(state => state.selectedCol);
 
     //setto uno stato locale per l'header da visualizzare
-    const [originalKeys, setOriginalKeys] = React.useState(() => {
-        const items = Object.keys(loadedTable[0]).map((key) => {
-            return {
-                Header: 'ciao', //<><p>{key}</p> {
-                    //!checkIfColumnIsSelected(key) &&
-                    //<button className={style.buttonSelect} onClick={e => { selectColClick(e, key) }}>Select</button>
-                //} </>,
-                accessor: parseInt(key, 10) || key,
-                key: key,
-            }
-        }); 
-        console.log(items);
-        return items;
-    }
-    );
+    const [myKeys, setMyKeys] = React.useState(loadedKeys);
+
+    //uno stato per la visdualizzazione del pannello Hide/show
+
+    const [showPanel, setShowPanel] = React.useState(false);
+
+    // const per le checkbox Show/hide
+    const checkBoxes = loadedKeys.map((key) => {
+        return (
+            <div className={style.halfBox} key={key.accessor}>
+            <label>{key.accessor}</label>
+            <input type="checkbox" value={key.id} defaultChecked onChange={(e) => {handleCheckBoxchange(e, key.accessor)}}/>
+            </div>
+        )
+    })
+
+    // un array di elementi per le colonne selzionate
+    const selectedColToViz = selectedCol.map((col => {
+        return(
+            <li key ={col}>
+                {col}
+            </li>
+        )
+    }))
 
     /*dallo stato locale poi facciamo derivare quello globale, in questo useffect metto anche la creazione degli input */
     React.useEffect(
         () => {
-            console.log(originalKeys);
-            dispatchKeys(originalKeys);
-        }, [originalKeys]
+            dispatchKeys(myKeys);
+        }, [myKeys]
     )
-
-    // uno stato anche per le colonne selezionate
-    const [selectedColToViz, setSelectedColToViz] = React.useState([]);
 
     // quando cambio le colonne selezionanate, cambio anche l'header da visualizzare
     React.useEffect(() => {
-        setOriginalKeys(setKeys);
+        setMyKeys(setKeys);
     }, [selectedCol])
+
 
 
     // questa funzione è chiamata quando cambio le colonne selezionate, per aggiornare l'header
@@ -82,11 +82,25 @@ function VizOptions() {
                 Header: <><p>{key}</p> {
                     !checkIfColumnIsSelected(key) &&
                     <button className={style.buttonSelect} onClick={e => { selectColClick(e, key) }}>Select</button>
-                } </>,
+                }
+                    {
+                        checkIfColumnIsSelected(key) &&
+                        <button className={style.buttonSelect} onClick={e => { deselectColClick(e, key) }}> Deselect </button>
+                    } </>,
                 accessor: parseInt(key, 10) || key,
-                key: key,
+                show: true,
+                id: key,
             }
         })
+    }
+
+    // funzione che si triggera all'onchange delle checkboxes
+    function handleCheckBoxchange(event, key) {
+        if (event.target.checked) {
+            dispatchShowCol(event.target.value);
+        } else {
+            dispatchHideCol(event.target.value);
+        }
     }
 
     // controllo se una colonna è selezionata per decidere come visualizzare l'header
@@ -112,23 +126,24 @@ function VizOptions() {
     }
 
 
-    React.useEffect(() => {
-        setSelectedColToViz(selectedCol.map(col => {
-            return (
-                <li key={col}>
-                    {col}
-                    <button onClick={e => { deselectColClick(e, col) }}>Deselect</button>
-                </li>
-            )
-        }))
-    }, [selectedCol]);
-
-
     return (
         <div className={style.toVisualDiv}>
-            <h3>Selected Columns:</h3>
-            {selectedColToViz}
+            <div className={style.halfBox}>
+                    <h3>Selected Columns:</h3>
+                    {selectedColToViz}
+            </div>
+            <div className={style.halfBox}>
+                <h3>Options</h3>
+                <button onClick = {() => {setShowPanel(!showPanel)}}>Show/Hide Columns</button>
+                {showPanel &&
+                    <div>
+                        {checkBoxes}
+                    </div>
+                }
+
+            </div>
         </div>
+
     )
 }
 

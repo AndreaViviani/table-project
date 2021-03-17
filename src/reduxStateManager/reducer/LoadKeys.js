@@ -1,20 +1,35 @@
-const loadKeysReducer = ( state = null, action ) => {
+import produce from "immer";
 
+const loadKeysReducer = ( state = null, action ) => {
+    const colToHideId = action.colToHideId;
+    const colToShowId = action.colToShowId;
     var keysToLoad = action.keysToLoad;
-    var keyToAdd = action.keyToAdd;
-    var indexToRemove = action.indexToRemove;
-    var indexToAdd = action.indexToAdd;
+    const previousState = state;
     switch(action.type) {
         case "LOADKEYS":
             return state = keysToLoad;
-        case "REMOVE":
-            return state = [...state.filter((item, index)=> index !== indexToRemove)]
-        case "ADD":
-            var firstPortion = state.slice(0, indexToAdd);
-            var secondPortion = state.slice(indexToAdd, state.length);
-            var firstAddedPortion = [...firstPortion, keyToAdd];
-            return state = firstAddedPortion.concat(secondPortion);
-
+        case "HIDE":
+            let indexToHide = null;
+            for(let i = 0; i < previousState.length; i ++) {
+                if (previousState[i].id === colToHideId) {
+                    indexToHide = i;
+                }
+            }
+            const nextHiddenState = produce(previousState, draftState => {
+                draftState[indexToHide].show = false;
+            })
+            return state = nextHiddenState;
+        case "SHOW":
+            let indexToShow = null;
+            for(let i = 0; i < previousState.length; i ++) {
+                if (previousState[i].id === colToShowId) {
+                    indexToShow = i;
+                }
+            }
+            const nextShownState = produce(previousState, draftState => {
+                draftState[indexToShow].show = true;
+            })
+            return state = nextShownState;
         default:
             return state;
     }
