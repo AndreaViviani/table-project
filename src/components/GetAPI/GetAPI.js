@@ -3,7 +3,7 @@ import style from "./GetAPI.module.css";
 import { csvJSON, ssvJSON, jsonJSON } from "../../logicModules/formatConverter/converter";
 import { useDispatch } from "react-redux";
 /*importo l'action per caricare i dati nel redux storage */
-import { loadTable } from "../../reduxStateManager/actions";
+import { loadTable, selectCol } from "../../reduxStateManager/actions";
 
 function GetAPI() {
     /*Use useSelector to display my redux state */
@@ -24,18 +24,24 @@ function GetAPI() {
     const [externalUrl, setExternalUrl] = React.useState("");
     const [format, setFormat] = React.useState("JSON");
 
-    /*Handle changing format */
-    function handleChangeFormat(e) {
-        setFormat(e.target.value);
-    }
+    // state dataset to retrieve
+    const [dataSet, setDataSet] = React.useState('meteo');
 
+    //name of the saved table to retrieve
+    const [savedName, setSavedName] = React.useState("");
 
+    const [serverToLoad, setServerToLoad] = React.useState('table');
 
     /*Loading state for external API */
     const [loadingExt, setLoadingExt] = React.useState("Not Loaded");
 
     /*Loading state for our API */
     const [loadingOur, setLoadingOur] = React.useState("Not Loaded");
+
+    /*Handle changing format */
+    function handleChangeFormat(e) {
+        setFormat(e.target.value);
+    }
 
 
 
@@ -65,7 +71,7 @@ function GetAPI() {
 
     /*This fucntion hande (our server) submit, concatenate the string of the url and make the call to the server*/
     function handleSubmit() {
-        var myGetUrl = `http://localhost:3000/${region}/${year}/${month}/${day}`;
+        var myGetUrl = `http://localhost:3001/meteo/${region}/${year}/${month}/${day}`;
         setLoadingOur("Loading...")
         fetch(myGetUrl, {
             headers: {
@@ -81,37 +87,93 @@ function GetAPI() {
             })
     }
 
+    function handleChangeSelect(e) {
+        setDataSet(e.target.value);
+    }
+
 
     return (
         <>
             <h3>Get data from API</h3>
-            <h4>Get data from our server</h4>
-            <form className={style.getMyServerFrom} >
-                <input type="text" placeholder="Region" onChange={e => setRegion(e.target.value)} />
-                <span>/</span>
-                <input type="text" placeholder="Year" onChange={e => setYear(e.target.value)} />
-                <span>/</span>
-                <input type="text" placeholder="Month" onChange={e => setMonth(e.target.value)} />
-                <span>/</span>
-                <input type="text" placeholder="Day" onChange={e => setDay(e.target.value)} /> <br />
-                <div className={style.submitButton} onClick={handleSubmit}>GET</div>
-                <p>Loading state: <span>{loadingOur}</span></p>
-            </form>
-            <h4>Get data from external API</h4>
-            <form>
-                <label>Choose format</label>
-                <select className={style.formatSelect} value={format} onChange={handleChangeFormat}>
-                    <option value="JSON" default>JSON</option>
-                    <option value="CSV" default>CSV</option>
-                    <option value="SSV" default>SSV</option>
-                </select>
-                <br />
+            <label for="chooseServ">Scegli da quale server vuoi caricare i dati</label>
+            <select onChange={(e)=>{
+                setServerToLoad(e.target.value)
+            }}>
+                <option value="table">
+                    TableServer
+                </option>
+                <option value="others">
+                    Altri
+                </option>
+            </select>
+            {
+                serverToLoad === "table" &&
+                <div>
+                    <h4>Get data from our server</h4>
+                    <form className={style.getMyServerFrom} >
+                        <label for="db">Scegli la banca dati:</label>
+                        <select onChange={(e) => {
+                            handleChangeSelect(e)
+                        }}>
+                            <option value="meteo">
+                                Meteo
+                    </option>
+                            <option value="covid">
+                                Covid
+                    </option>
+                            <option value="saved">
+                                Saved Table
+                    </option>
+                        </select>
+                        <br />
+                        {
+                            dataSet === "meteo" &&
+                            <div>
+                                <input type="text" placeholder="Region" onChange={e => setRegion(e.target.value)} />
+                                <span>/</span>
+                                <input type="text" placeholder="Year" onChange={e => setYear(e.target.value)} />
+                                <span>/</span>
+                                <input type="text" placeholder="Month" onChange={e => setMonth(e.target.value)} />
+                                <span>/</span>
+                                <input type="text" placeholder="Day" onChange={e => setDay(e.target.value)} /> <br />
+                            </div>
+                        }
+                        {
+                            dataSet === "saved" &&
+                            <div>
+                                <label for="savedName">Inserisci il nome della tabella salvata: </label>
+                                <input id="saveName" type="text" onChange={(e) => {
+                                    setSavedName(e.target.value);
+                                }} />
+                            </div>
+                        }
 
-                <input type="text" placeholder="URL..." onChange={e => setExternalUrl(e.target.value)} />
-                <br />
-                <div className={style.submitButton} onClick={handleExtSubmit}>GET</div>
-                <p>Loading state: <span>{loadingExt}</span></p>
-            </form>
+
+                        <div className={style.submitButton} onClick={handleSubmit}>GET</div>
+                        <p>Loading state: <span>{loadingOur}</span></p>
+                    </form>
+                </div>
+            }
+            {
+                serverToLoad === "others" &&
+                <div>
+                    <h4>Get data from external API</h4>
+                    <form>
+                        <label>Choose format</label>
+                        <select className={style.formatSelect} value={format} onChange={handleChangeFormat}>
+                            <option value="JSON" default>JSON</option>
+                            <option value="CSV" default>CSV</option>
+                            <option value="SSV" default>SSV</option>
+                        </select>
+                        <br />
+
+                        <input type="text" placeholder="URL..." onChange={e => setExternalUrl(e.target.value)} />
+                        <br />
+                        <div className={style.submitButton} onClick={handleExtSubmit}>GET</div>
+                        <p>Loading state: <span>{loadingExt}</span></p>
+                    </form>
+                </div>
+            }
         </>
     )
 }

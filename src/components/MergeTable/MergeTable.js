@@ -46,7 +46,7 @@ function MergeTable() {
             let year = splittedData[0];
             let month = splittedData[1];
             let day = splittedData[2].split('T')[0];
-            const url = `http://localhost:3001/${regione}/${provincia}/${year}/${month}/${day}`;
+            const url = `http://localhost:3001/meteo/${regione}/${provincia}/${year}/${month}/${day}`;
             // riempio intanto l'oggetto con i dati delle colonne già presenti selezionate
             for (const col of selectedCol) {
                 myNewObj[col] = loadedTable[i][col];

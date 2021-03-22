@@ -14,7 +14,7 @@ function ModOptions() {
     //Facciamo una funzione per salvare la tabella, dovrà inviare una post (con axios) al server */
     function handleSave() {
         console.log('ciao');
-        axios.post("http://localhost:3001/save/title", {
+        axios.post(`http://localhost:3001/save/${toSaveName}`, {
             data: loadedTable,
         })
         .then((res) => {
@@ -35,9 +35,9 @@ function ModOptions() {
     return (
         <>
             <div className={style.modTableDiv}>
-                <p>Here you can reset, save and merge another column on your table</p>
                 <div className={style.resetSave}>
-                    <input type="text" onChange={(e)=>{handleChange(e)}}/>
+                    <label for="name">Con quale nome vuoi salvare la tua tabella?</label>
+                    <input type="text" id="name" onChange={(e)=>{handleChange(e)}}/>
                     <div className={style.saveButton} onClick={() => {handleSave()}}>
                         Save table
                     </div>
