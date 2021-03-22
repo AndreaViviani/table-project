@@ -1,27 +1,34 @@
 import style from "./ModOptions.module.css";
-//import { useSelector, useDispatch } from "react-redux";
-//import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
+import React from "react";
 
 //This component will have function to merge table, reset table with the original and save on the server
 function ModOptions() {
 
-    /*Per resettare la tabella dobbiamo sovrarscivere la copied table con la loaded table */
-    //const loadedTable = useSelector(state => state.loadedTable);
-    //const dispatch = useDispatch();
-    /*Questa è la funzione incaricata */
+    const loadedTable = useSelector(state => state.loadedTable);
+
+    const [toSaveName, setToSaveName] = React.useState("");
 
 
-    /*che deve essere chiamata al click su reset */
-
-
-    /*Facciamo una funzione per salvare la tabella, dovrà inviare una post (con axios) al server */
-    /*function handleSave() {
-        axios.post("http://localhost:3000/save", {
-            title: "myTitle",
-            data: actualTable
+    //Facciamo una funzione per salvare la tabella, dovrà inviare una post (con axios) al server */
+    function handleSave() {
+        console.log('ciao');
+        axios.post("http://localhost:3001/save/title", {
+            data: loadedTable,
+        })
+        .then((res) => {
+            console.log(res);
+            if (res.data.nameInTaken) {
+                alert("attenzione, il nome è già stato preso, scegliere un altro nome per salvare la tabella");
+            }
         })
         
-    }*/
+    }
+
+    function handleChange(e){
+        setToSaveName(e.target.value);
+    }
 
 
 
@@ -30,7 +37,8 @@ function ModOptions() {
             <div className={style.modTableDiv}>
                 <p>Here you can reset, save and merge another column on your table</p>
                 <div className={style.resetSave}>
-                    <div className={style.saveButton} /*onClick={handleSave()}*/>
+                    <input type="text" onChange={(e)=>{handleChange(e)}}/>
+                    <div className={style.saveButton} onClick={() => {handleSave()}}>
                         Save table
                     </div>
                 </div>

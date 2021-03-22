@@ -3,7 +3,8 @@ import produce from "immer";
 const loadKeysReducer = ( state = null, action ) => {
     const colToHideId = action.colToHideId;
     const colToShowId = action.colToShowId;
-    var keysToLoad = action.keysToLoad;
+    const keysToLoad = action.keysToLoad;
+    const colToPop = action.colToPop;
     const previousState = state;
     switch(action.type) {
         case "LOADKEYS":
@@ -30,6 +31,17 @@ const loadKeysReducer = ( state = null, action ) => {
                 draftState[indexToShow].show = true;
             })
             return state = nextShownState;
+        case "POPCOL":
+            const nextState = [];
+            for (const el of previousState){
+                if (el.id === colToPop) {
+                    continue;
+                } else {
+                    nextState.push(el);
+                }
+                console.log(nextState);
+            }
+            return state = nextState;
         default:
             return state;
     }

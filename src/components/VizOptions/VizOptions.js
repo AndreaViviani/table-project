@@ -1,7 +1,8 @@
 import React from "react";
 import style from "./VizOption.module.css";
 import { useSelector, useDispatch } from "react-redux";
-import { loadKeys, hideCol, showCol, selectCol, deselectCol } from "../../reduxStateManager/actions";
+import { loadKeys, hideCol, showCol, selectCol, deselectCol, popColData, popCol, popColSel } from "../../reduxStateManager/actions";
+import MergeTable  from "../MergeTable/MergeTable";
 
 function VizOptions() {
 
@@ -25,6 +26,15 @@ function VizOptions() {
     const dispatchDeselectCol = (colToDeselect) => {
         dispatch(deselectCol(colToDeselect))
     };
+    const dispatchPopColData = (colToPop) => {
+        dispatch(popColData(colToPop));
+    }
+    const dispatchPopCol = (colToPop) => {
+        dispatch(popCol(colToPop));
+    }
+    const dispatchPopSel = (colToPop) => {
+        dispatch(popColSel(colToPop));
+    }
 
     /*recupero lo stato della tabella originale, su cui fare operazioni. Non vado a cambiare questo stato in modo da poterlo usare poi per resettare*/
     const loadedTable = useSelector(state => state.loadedTable);
@@ -57,9 +67,20 @@ function VizOptions() {
         return(
             <li key ={col}>
                 {col}
+                <button onClick={()=>{deleteCol(col)}}>Delete column</button>
             </li>
         )
     }))
+
+    function deleteCol(col) {
+        // togliere dai dati 
+        console.log(col);
+        dispatchPopColData(col);
+        // togliere dalle colonne 
+        dispatchPopCol(col);
+        //togliere dalle colonne selezionate 
+        dispatchPopSel(col);
+    }
 
     /*dallo stato locale poi facciamo derivare quello globale, in questo useffect metto anche la creazione degli input */
     React.useEffect(
@@ -71,25 +92,26 @@ function VizOptions() {
     // quando cambio le colonne selezionanate, cambio anche l'header da visualizzare
     React.useEffect(() => {
         setMyKeys(setKeys);
-    }, [selectedCol])
+    }, [selectedCol,loadedTable])
 
 
 
     // questa funzione è chiamata quando cambio le colonne selezionate, per aggiornare l'header
     const setKeys = () => {
-        return Object.keys(loadedTable[0]).map((key) => {
+        return loadedKeys.map((col) => {
             return {
-                Header: <><p>{key}</p> {
-                    !checkIfColumnIsSelected(key) &&
-                    <button className={style.buttonSelect} onClick={e => { selectColClick(e, key) }}>Select</button>
+                Header: <><p>{col.accessor}</p> {
+                    !checkIfColumnIsSelected(col.id) &&
+                    <button className={style.buttonSelect} onClick={e => { selectColClick(e, col) }}>Select</button>
                 }
                     {
-                        checkIfColumnIsSelected(key) &&
-                        <button className={style.buttonSelect} onClick={e => { deselectColClick(e, key) }}> Deselect </button>
+                        checkIfColumnIsSelected(col.id) &&
+                        <button className={style.buttonSelect} onClick={e => { deselectColClick(e, col) }}> Deselect </button>
                     } </>,
-                accessor: parseInt(key, 10) || key,
-                show: true,
-                id: key,
+                accessor: parseInt(col.accessor, 10) || col.accessor,
+                show: col.show,
+                selected: checkIfColumnIsSelected(col.id),
+                id: col.id,
             }
         })
     }
@@ -117,12 +139,12 @@ function VizOptions() {
     // funzione che si triggera quando clicco sul bottone di selzione di una colonna
     function selectColClick(e, key) {
         e.preventDefault();
-        dispatchSelectCol(key);
+        dispatchSelectCol(key.id);
     }
     // deseleziono la colonna 
     function deselectColClick(e, col) {
         e.preventDefault();
-        dispatchDeselectCol(col);
+        dispatchDeselectCol(col.id);
     }
 
 
@@ -131,9 +153,15 @@ function VizOptions() {
             <div className={style.halfBox}>
                     <h3>Selected Columns:</h3>
                     {selectedColToViz}
+                    {
+                    selectedCol.length !== 0 &&
+                    <MergeTable>
+
+                    </MergeTable>
+                }
             </div>
             <div className={style.halfBox}>
-                <h3>Options</h3>
+                <h3>Visualization Options</h3>
                 <button onClick = {() => {setShowPanel(!showPanel)}}>Show/Hide Columns</button>
                 {showPanel &&
                     <div>

@@ -21,11 +21,12 @@ function GetLocal() {
     /*setting function to dispatch data and calling it in a useeffect executed e when selectedFile changes */
     const dispatch = useDispatch();
 
+    const loadedTable = useSelector(state => state.loadedTable);
+
     const dispatchLoad = (data) =>{
         dispatch(loadTable(data));
     }
     const dispatchKeys = (keysToLoad) => {
-        console.log(keysToLoad);
         dispatch(loadKeys(keysToLoad));
     }
 

@@ -1,12 +1,12 @@
 export const loadTable = (dataToLoad) =>{
-    return{
+    return {
         type: "LOAD",
         dataToLoad,
     };
-};
+}
+    
 
 export const loadKeys = (keysToLoad) => {
-    console.log(keysToLoad);
     return{
         type:"LOADKEYS",
         keysToLoad,
@@ -45,5 +45,26 @@ export const showCol = (colToShowId) => {
     return {
         type: "SHOW",
         colToShowId,
+    }
+}
+
+export const popColData = (colToPop) => {
+    return {
+        type: "POP",
+        colToPop,
+    }
+}
+
+export const popCol = (colToPop) => {
+    return {
+        type:"POPCOL", 
+        colToPop,
+    }
+}
+
+export const popColSel = (colToPop) => {
+    return {
+        type:"POPSEL",
+        colToPop,
     }
 }
