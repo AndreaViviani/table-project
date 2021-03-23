@@ -36,8 +36,8 @@ function ModOptions() {
         <>
             <div className={style.modTableDiv}>
                 <div className={style.resetSave}>
-                    <label for="name">Con quale nome vuoi salvare la tua tabella?</label>
-                    <input type="text" id="name" onChange={(e)=>{handleChange(e)}}/>
+                    <label>Con quale nome vuoi salvare la tua tabella?</label>
+                    <input type="text" onChange={(e)=>{handleChange(e)}}/>
                     <div className={style.saveButton} onClick={() => {handleSave()}}>
                         Save table
                     </div>

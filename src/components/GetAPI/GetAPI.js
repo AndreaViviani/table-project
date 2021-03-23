@@ -3,7 +3,8 @@ import style from "./GetAPI.module.css";
 import { csvJSON, ssvJSON, jsonJSON } from "../../logicModules/formatConverter/converter";
 import { useDispatch } from "react-redux";
 /*importo l'action per caricare i dati nel redux storage */
-import { loadTable, selectCol } from "../../reduxStateManager/actions";
+import { loadTable, loadKeys } from "../../reduxStateManager/actions";
+import axios from "axios";
 
 function GetAPI() {
     /*Use useSelector to display my redux state */
@@ -14,11 +15,15 @@ function GetAPI() {
         dispatch(loadTable(data))
     }
 
+    const dispatchKeys = (keysToLoad) => {
+        dispatch(loadKeys(keysToLoad));
+    }
+
     /*Some states for the form (API myserver)*/
-    const [region, setRegion] = React.useState("Lombardia");
+    const [region, setRegion] = React.useState("Valle-d'Aosta");
     const [year, setYear] = React.useState("2020");
-    const [month, setMonth] = React.useState("Maggio");
-    const [day, setDay] = React.useState("15");
+    const [month, setMonth] = React.useState("01");
+    const [day, setDay] = React.useState("01");
 
     /*This states are relative to the external API call */
     const [externalUrl, setExternalUrl] = React.useState("");
@@ -32,71 +37,144 @@ function GetAPI() {
 
     const [serverToLoad, setServerToLoad] = React.useState('table');
 
-    /*Loading state for external API */
-    const [loadingExt, setLoadingExt] = React.useState("Not Loaded");
+    const [isLoaded, setIsLoaded] = React.useState("Not loaded");
 
-    /*Loading state for our API */
-    const [loadingOur, setLoadingOur] = React.useState("Not Loaded");
+    const regions = [{ name: "Valle d'Aosta", value: "Valle-d'Aosta" }, { name: "Piemonte", value: "Piemonte" }, { name: "Liguria", value: "Liguria" },
+    { name: "Lombardia", value: "Lombardia" }, { name: "Trentino-Alto Adige", value: "Trentino-Alto-Adige" }, { name: "Veneto", value: "Veneto" }, { name: "Friuli-Venezia Giulia", value: "Friuli-Venezia Giulia" },
+    { name: "Emilia Romagna", value: "Emilia-Romagna" }, { name: "Toscana", value: "Toscana" }, { name: "Umbria", value: "Umbria" }, { name: "Lazio", value: "Lazio" }, { name: "Abruzzo", value: "Abruzzo" },
+    { name: "Molise", value: "Molise" }, { name: "Campania", value: "Campania" }, { name: "Puglia", value: "Puglia" }, { name: "Basilicata", value: "Basilicata" }, { name: "Calabria", value: "Calabria" },
+    { name: "Sicilia", value: "Sicilia" }, { name: "Sardegna", value: "Sardegna" }
+    ]
 
-    /*Handle changing format */
-    function handleChangeFormat(e) {
-        setFormat(e.target.value);
-    }
+    const regionOptions = regions.map((region) => {
+        return (
+            <option value={region.value} key={region.value}>
+                {region.name}
+            </option>
+        )
+    })
 
+    const months = [{ name: "Gennaio", value: "01" }, { name: "Febbraio", value: "02" }, { name: "Marzo",  value: "03" }, 
+    { name: "Aprile",value: "04"}, { name: "Maggio", value: "05" }, { name: "Giugno", value: "06" },
+    { name: "Luglio", value: "07"}, { name: "Agosto", value: "08" }, { name: "Settembre", value: "09" },
+     { name: "Ottobre", value: "10" }, { name: "Novembre", value: "11" }, { name: "Dicembre", value: "12"},
+    ]
 
-
-    /*This function handle external submit */
-    function handleExtSubmit() {
-        const extUrl = externalUrl;
-        setLoadingExt("Loading");
-        fetch(extUrl)
-            .then((response) => response.text())
-            .then((data) => {
-                switch (format) {
-                    case "JSON":
-                        dispatchLoad(jsonJSON(data));
-                        break;
-                    case "SSV":
-                        dispatchLoad(ssvJSON(data));
-                        break;
-                    case "CSV":
-                        dispatchLoad(csvJSON(data));
-                        break;
-                    default:
-                        dispatchLoad(jsonJSON(data));
-                }
-                setLoadingExt("Loaded");
-            })
-    }
+    const monthOptions = months.map((month) => {
+        return (
+            <option value={month.value} key={month.name}>
+                {month.name}
+            </option>
+        )
+    })
 
     /*This fucntion hande (our server) submit, concatenate the string of the url and make the call to the server*/
     function handleSubmit() {
-        var myGetUrl = `http://localhost:3001/meteo/${region}/${year}/${month}/${day}`;
-        setLoadingOur("Loading...")
-        fetch(myGetUrl, {
-            headers: {
-                "Accept": "text/csv"
-            }
-        })
-            .then((response) => response.text())
-            .then((data) => {
-                data = csvJSON(data);
-                console.log(data);
-                dispatchLoad(data);
-                setLoadingOur("Loaded")
-            })
+        switch (serverToLoad) {
+            case "table":
+                getTableData();
+                break;
+            case "others":
+                getExternalData();
+                break;
+        }
     }
 
-    function handleChangeSelect(e) {
-        setDataSet(e.target.value);
+    const createKeys = (table) => {
+        const items = Object.keys(table[0]).map((key) => {
+            return {
+                Header:<p>{key}</p> ,
+                accessor: parseInt(key, 10) || key,
+                key: key,
+                show: true,
+                id: key,
+            }
+        }); 
+        return items;
     }
+
+    function getTableData() {
+        switch (dataSet) {
+            case "meteo":
+                setIsLoaded("loading");
+                axios.get(`http://localhost:3001/meteo/${region}/${year}/${month}/${day}`)
+                    .then((res) => {
+                        dispatchLoad(res.data.data);
+                        dispatchKeys(createKeys(res.data.data));
+                        setIsLoaded("loaded");
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                        setIsLoaded("error: requested data could be not available or our server could be down");
+                    })
+                break;
+            case "covid":
+                setIsLoaded("loading");
+                axios.get(`http://localhost:3001/covid/${region}/${year}/${month}/${day}`)
+                    .then((res) => {
+                        console.log(res.data.data);
+                        dispatchLoad(res.data.data);
+                        dispatchKeys(createKeys(res.data.data));
+                        setIsLoaded("loaded");
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                        setIsLoaded("error: requested data could be not available or our server could be down");
+                    })
+                break;
+            case "saved":
+                setIsLoaded("loading");
+                axios.get(`http://localhost:3001/saved/${savedName}`)
+                    .then((res) => {
+                        dispatchLoad(res.data);
+                        dispatchKeys(createKeys(res.data.data));
+                        setIsLoaded("loaded");
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                        setIsLoaded("error: requested data could be not available or our server could be down");
+                    })
+                break;
+        }
+    }
+
+    function getExternalData() {
+        setIsLoaded("loading");
+        axios.get(externalUrl)
+            .then((res) => {
+                switch (format) {
+                    case "JSON":
+                        dispatchLoad(res.data.data);
+                        dispatchKeys(createKeys(res.data.data));
+                        setIsLoaded("loaded");
+                        break;
+                    case "CSV":
+                        dispatchLoad(csvJSON(res.data.data));
+                        dispatchKeys(createKeys(csvJSON(res.data.data)));
+                        setIsLoaded("loaded");
+                        break;
+                    case "SSV":
+                        dispatchLoad(ssvJSON(res.data.data));
+                        dispatchKeys(createKeys(ssvJSON(res.data.data)));
+                        setIsLoaded("loaded");
+                        break;
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                setIsLoaded("error: requested data could be not available or our server could be down");
+            })
+
+    }
+
+
 
 
     return (
         <>
             <h3>Get data from API</h3>
-            <label for="chooseServ">Scegli da quale server vuoi caricare i dati</label>
-            <select onChange={(e)=>{
+            <label>Scegli da quale server vuoi caricare i dati</label>
+            <select onChange={(e) => {
                 setServerToLoad(e.target.value)
             }}>
                 <option value="table">
@@ -111,9 +189,9 @@ function GetAPI() {
                 <div>
                     <h4>Get data from our server</h4>
                     <form className={style.getMyServerFrom} >
-                        <label for="db">Scegli la banca dati:</label>
+                        <label >Scegli la banca dati:</label>
                         <select onChange={(e) => {
-                            handleChangeSelect(e)
+                            setDataSet(e.target.value)
                         }}>
                             <option value="meteo">
                                 Meteo
@@ -127,30 +205,43 @@ function GetAPI() {
                         </select>
                         <br />
                         {
-                            dataSet === "meteo" &&
+                            (dataSet === "meteo" || dataSet === "covid") &&
                             <div>
-                                <input type="text" placeholder="Region" onChange={e => setRegion(e.target.value)} />
+                                <select onChange={(e) => {setRegion(e.target.value); console.log(e.target.value)}}>
+                                    {regionOptions}
+                                </select>
                                 <span>/</span>
-                                <input type="text" placeholder="Year" onChange={e => setYear(e.target.value)} />
+                                <select onChange={(e) => {setYear(e.target.value); console.log(e.target.value)}}>
+                                    <option value="2020">
+                                        2020
+                                    </option>
+                                    <option value="2021">
+                                        2021
+                                    </option>
+                                </select>
                                 <span>/</span>
-                                <input type="text" placeholder="Month" onChange={e => setMonth(e.target.value)} />
+                                <select onChange={(e) => {setMonth(e.target.value); console.log(e.target.value) }}>
+                                    {monthOptions}
+                                </select>
                                 <span>/</span>
-                                <input type="text" placeholder="Day" onChange={e => setDay(e.target.value)} /> <br />
+                                <input type="number" onChange={(e)=>{setDay(e.target.value)}}/>
                             </div>
                         }
                         {
                             dataSet === "saved" &&
                             <div>
-                                <label for="savedName">Inserisci il nome della tabella salvata: </label>
-                                <input id="saveName" type="text" onChange={(e) => {
+                                <label>Inserisci il nome della tabella salvata: </label>
+                                <input type="text" onChange={(e) => {
                                     setSavedName(e.target.value);
                                 }} />
                             </div>
                         }
+                        {
+                            dataSet === "covid" &&
+                            <div>
 
-
-                        <div className={style.submitButton} onClick={handleSubmit}>GET</div>
-                        <p>Loading state: <span>{loadingOur}</span></p>
+                            </div>
+                        }
                     </form>
                 </div>
             }
@@ -160,7 +251,7 @@ function GetAPI() {
                     <h4>Get data from external API</h4>
                     <form>
                         <label>Choose format</label>
-                        <select className={style.formatSelect} value={format} onChange={handleChangeFormat}>
+                        <select className={style.formatSelect} value={format} onChange={(e) => setFormat(e.target.value)}>
                             <option value="JSON" default>JSON</option>
                             <option value="CSV" default>CSV</option>
                             <option value="SSV" default>SSV</option>
@@ -169,11 +260,11 @@ function GetAPI() {
 
                         <input type="text" placeholder="URL..." onChange={e => setExternalUrl(e.target.value)} />
                         <br />
-                        <div className={style.submitButton} onClick={handleExtSubmit}>GET</div>
-                        <p>Loading state: <span>{loadingExt}</span></p>
                     </form>
                 </div>
             }
+            <div className={style.submitButton} onClick={handleSubmit}>GET</div>
+            <p>Loading state: {isLoaded}</p>
         </>
     )
 }
