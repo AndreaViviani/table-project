@@ -10,7 +10,9 @@ const selectColReducer = ( state = [], action ) => {
         case "POPSEL":
             const previousState = state;
             const nextState  = previousState.filter((el) => el !== colToPop);
-        return state  = nextState;
+            return state  = nextState;
+        case "DELETESEL":
+            return state = [];
         default:
             return state;
     }

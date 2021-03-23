@@ -53,10 +53,12 @@ function MergeTable() {
             }
             axios.get(url)
                 .then(
-                    (res) => {
+                    (res) => {console.log(res.data);
                         myNewObj = { ...myNewObj, ...res.data };
                         myNewData.push(myNewObj);
+                        console.log(i);
                         if (i === (loadedTable.length - 1)) {
+                            console.log(myNewData);
                             dispatchKeys(Object.keys(myNewData[0]).map((key) => {
                                 return {
                                     Header:<p>{key}</p> ,
@@ -73,6 +75,7 @@ function MergeTable() {
                 .catch((err) => {
                     console.log(err);
                 })
+            console.log(i);
         }
     }
 

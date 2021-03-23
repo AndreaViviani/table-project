@@ -3,7 +3,7 @@ import style from "./GetAPI.module.css";
 import { csvJSON, ssvJSON, jsonJSON } from "../../logicModules/formatConverter/converter";
 import { useDispatch } from "react-redux";
 /*importo l'action per caricare i dati nel redux storage */
-import { loadTable, loadKeys } from "../../reduxStateManager/actions";
+import { loadTable, loadKeys, delSel } from "../../reduxStateManager/actions";
 import axios from "axios";
 
 function GetAPI() {
@@ -17,6 +17,9 @@ function GetAPI() {
 
     const dispatchKeys = (keysToLoad) => {
         dispatch(loadKeys(keysToLoad));
+    }
+    const dispatchDeleteSel = () => {
+        dispatch(delSel());
     }
 
     /*Some states for the form (API myserver)*/
@@ -40,7 +43,7 @@ function GetAPI() {
     const [isLoaded, setIsLoaded] = React.useState("Not loaded");
 
     const regions = [{ name: "Valle d'Aosta", value: "Valle-d'Aosta" }, { name: "Piemonte", value: "Piemonte" }, { name: "Liguria", value: "Liguria" },
-    { name: "Lombardia", value: "Lombardia" }, { name: "Trentino-Alto Adige", value: "Trentino-Alto-Adige" }, { name: "Veneto", value: "Veneto" }, { name: "Friuli-Venezia Giulia", value: "Friuli-Venezia Giulia" },
+    { name: "Lombardia", value: "Lombardia" }, { name: "Trentino-Alto Adige", value: "Trentino-Alto-Adige" }, { name: "Veneto", value: "Veneto" }, { name: "Friuli-Venezia Giulia", value: "Friuli-Venezia-Giulia" },
     { name: "Emilia Romagna", value: "Emilia-Romagna" }, { name: "Toscana", value: "Toscana" }, { name: "Umbria", value: "Umbria" }, { name: "Lazio", value: "Lazio" }, { name: "Abruzzo", value: "Abruzzo" },
     { name: "Molise", value: "Molise" }, { name: "Campania", value: "Campania" }, { name: "Puglia", value: "Puglia" }, { name: "Basilicata", value: "Basilicata" }, { name: "Calabria", value: "Calabria" },
     { name: "Sicilia", value: "Sicilia" }, { name: "Sardegna", value: "Sardegna" }
@@ -101,6 +104,7 @@ function GetAPI() {
                     .then((res) => {
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
+                        dispatchDeleteSel();
                         setIsLoaded("loaded");
                     })
                     .catch((err) => {
@@ -110,11 +114,12 @@ function GetAPI() {
                 break;
             case "covid":
                 setIsLoaded("loading");
+                console.log('ciao');
                 axios.get(`http://localhost:3001/covid/${region}/${year}/${month}/${day}`)
                     .then((res) => {
-                        console.log(res.data.data);
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
+                        dispatchDeleteSel();
                         setIsLoaded("loaded");
                     })
                     .catch((err) => {
@@ -128,6 +133,7 @@ function GetAPI() {
                     .then((res) => {
                         dispatchLoad(res.data);
                         dispatchKeys(createKeys(res.data.data));
+                        dispatchDeleteSel();
                         setIsLoaded("loaded");
                     })
                     .catch((err) => {
@@ -146,16 +152,19 @@ function GetAPI() {
                     case "JSON":
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
+                        dispatchDeleteSel();
                         setIsLoaded("loaded");
                         break;
                     case "CSV":
                         dispatchLoad(csvJSON(res.data.data));
                         dispatchKeys(createKeys(csvJSON(res.data.data)));
+                        dispatchDeleteSel();
                         setIsLoaded("loaded");
                         break;
                     case "SSV":
                         dispatchLoad(ssvJSON(res.data.data));
                         dispatchKeys(createKeys(ssvJSON(res.data.data)));
+                        dispatchDeleteSel();
                         setIsLoaded("loaded");
                         break;
                 }

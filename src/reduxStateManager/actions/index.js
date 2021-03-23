@@ -68,3 +68,9 @@ export const popColSel = (colToPop) => {
         colToPop,
     }
 }
+
+export const delSel = () => {
+    return {
+        type: "DELETESEL",
+    }
+}

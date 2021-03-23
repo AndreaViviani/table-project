@@ -1,7 +1,7 @@
 import React from "react";
 import style from "./GelLocal.module.css";
 import {useDispatch, useSelector} from "react-redux";
-import {loadTable, loadKeys} from "../../reduxStateManager/actions";
+import {loadTable, loadKeys, delSel} from "../../reduxStateManager/actions";
 import {csvJSON, ssvJSON, jsonJSON} from "./../../logicModules/formatConverter/converter";
 
 
@@ -28,6 +28,10 @@ function GetLocal() {
     }
     const dispatchKeys = (keysToLoad) => {
         dispatch(loadKeys(keysToLoad));
+    }
+
+    const dispatchDeleteSel = () => {
+        dispatch(delSel());
     }
 
     const createKeys = (table) => {
@@ -68,6 +72,7 @@ function GetLocal() {
             dispatchLoad(convertedFile);
             setLoadingState("Loaded");
             dispatchKeys(createKeys(convertedFile));
+            dispatchDeleteSel();
         }
         reader.readAsText(file);
     }
