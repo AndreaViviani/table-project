@@ -18,9 +18,13 @@ function ModOptions() {
             data: loadedTable,
         })
         .then((res) => {
-            console.log(res);
-            if (res.data.nameInTaken) {
-                alert("attenzione, il nome è già stato preso, scegliere un altro nome per salvare la tabella");
+            if (res.data.nameIsTaken) {
+                alert("This name has already been taken, choose a different name");
+            }
+             else if(!res.data.nameIsTaken && res.data.success) {
+                alert(`${toSaveName} table saved successfully`)
+            } else {
+                alert("An error occured in saving table, try again later")
             }
         })
         
@@ -36,7 +40,7 @@ function ModOptions() {
         <>
             <div className={style.modTableDiv}>
                 <div className={style.resetSave}>
-                    <label>Con quale nome vuoi salvare la tua tabella?</label>
+                    <label>Con quale nome vuoi salvare la tua tabella? </label>
                     <input type="text" onChange={(e)=>{handleChange(e)}}/>
                     <div className={style.saveButton} onClick={() => {handleSave()}}>
                         Save table

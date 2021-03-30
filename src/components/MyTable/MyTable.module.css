@@ -1,14 +1,29 @@
 .tableWrap {
   margin: 20px 10px;
   overflow-x: scroll;
-  background-color: #d4d6b9;
+  background-color: #fff;
   border-radius: 5px;
-  border: none;
-  box-shadow: 0px 0px 7px 2px #66717e;
+  border:2px solid #042650;
+  border-radius: 2px;
   padding: 20px;
 }
+
 .cells {
   text-align: center;
   padding: 0.5rem 0;
   border: solid 1px black;
+}
+
+.pagination {
+  padding-top: 1rem;
+}
+
+.pagination button {
+  font-size: 20px;
+  background-color: #388a7f;
+  font-weight: bold;
+  color:#fff;
+  border-radius:2px;
+  margin-right:5px;
+  padding:0 5px;
 }

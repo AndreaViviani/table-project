@@ -1,10 +1,12 @@
 import React from "react";
 import style from "./GetAPI.module.css";
-import { csvJSON, ssvJSON, jsonJSON } from "../../logicModules/formatConverter/converter";
+import { csvJSON, ssvJSON } from "../../logicModules/formatConverter/converter";
 import { useDispatch } from "react-redux";
 /*importo l'action per caricare i dati nel redux storage */
 import { loadTable, loadKeys, delSel } from "../../reduxStateManager/actions";
 import axios from "axios";
+import Loader from "react-loader-spinner";
+import { Link } from "react-router-dom";
 
 function GetAPI() {
     /*Use useSelector to display my redux state */
@@ -57,10 +59,10 @@ function GetAPI() {
         )
     })
 
-    const months = [{ name: "Gennaio", value: "01" }, { name: "Febbraio", value: "02" }, { name: "Marzo",  value: "03" }, 
-    { name: "Aprile",value: "04"}, { name: "Maggio", value: "05" }, { name: "Giugno", value: "06" },
-    { name: "Luglio", value: "07"}, { name: "Agosto", value: "08" }, { name: "Settembre", value: "09" },
-     { name: "Ottobre", value: "10" }, { name: "Novembre", value: "11" }, { name: "Dicembre", value: "12"},
+    const months = [{ name: "Gennaio", value: "01" }, { name: "Febbraio", value: "02" }, { name: "Marzo", value: "03" },
+    { name: "Aprile", value: "04" }, { name: "Maggio", value: "05" }, { name: "Giugno", value: "06" },
+    { name: "Luglio", value: "07" }, { name: "Agosto", value: "08" }, { name: "Settembre", value: "09" },
+    { name: "Ottobre", value: "10" }, { name: "Novembre", value: "11" }, { name: "Dicembre", value: "12" },
     ]
 
     const monthOptions = months.map((month) => {
@@ -86,13 +88,13 @@ function GetAPI() {
     const createKeys = (table) => {
         const items = Object.keys(table[0]).map((key) => {
             return {
-                Header:<p>{key}</p> ,
+                Header: <p>{key}</p>,
                 accessor: parseInt(key, 10) || key,
                 key: key,
                 show: true,
                 id: key,
             }
-        }); 
+        });
         return items;
     }
 
@@ -100,16 +102,17 @@ function GetAPI() {
         switch (dataSet) {
             case "meteo":
                 setIsLoaded("loading");
+                console.log(`http://localhost:3001/meteo/${region}/${year}/${month}/${day}`);
                 axios.get(`http://localhost:3001/meteo/${region}/${year}/${month}/${day}`)
                     .then((res) => {
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
                         dispatchDeleteSel();
-                        setIsLoaded("loaded");
+                        setIsLoaded("Loaded");
                     })
                     .catch((err) => {
                         console.error(err);
-                        setIsLoaded("error: requested data could be not available or our server could be down");
+                        setIsLoaded("error");
                     })
                 break;
             case "covid":
@@ -120,25 +123,26 @@ function GetAPI() {
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
                         dispatchDeleteSel();
-                        setIsLoaded("loaded");
+                        setIsLoaded("Loaded");
                     })
                     .catch((err) => {
                         console.error(err);
-                        setIsLoaded("error: requested data could be not available or our server could be down");
+                        setIsLoaded("error");
                     })
                 break;
             case "saved":
                 setIsLoaded("loading");
                 axios.get(`http://localhost:3001/saved/${savedName}`)
                     .then((res) => {
-                        dispatchLoad(res.data);
+                        console.log(res.data.data);
+                        dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
                         dispatchDeleteSel();
-                        setIsLoaded("loaded");
+                        setIsLoaded("Loaded");
                     })
                     .catch((err) => {
                         console.error(err);
-                        setIsLoaded("error: requested data could be not available or our server could be down");
+                        setIsLoaded("error");
                     })
                 break;
         }
@@ -153,127 +157,176 @@ function GetAPI() {
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
                         dispatchDeleteSel();
-                        setIsLoaded("loaded");
+                        setIsLoaded("Loaded");
                         break;
                     case "CSV":
                         dispatchLoad(csvJSON(res.data.data));
                         dispatchKeys(createKeys(csvJSON(res.data.data)));
                         dispatchDeleteSel();
-                        setIsLoaded("loaded");
+                        setIsLoaded("Loaded");
                         break;
                     case "SSV":
                         dispatchLoad(ssvJSON(res.data.data));
                         dispatchKeys(createKeys(ssvJSON(res.data.data)));
                         dispatchDeleteSel();
-                        setIsLoaded("loaded");
+                        setIsLoaded("Loaded");
                         break;
                 }
             })
             .catch((err) => {
                 console.error(err);
-                setIsLoaded("error: requested data could be not available or our server could be down");
+                setIsLoaded("error");
             })
 
+    }
+
+    function convertDay(day) {
+        let returnValue = ""
+        if (day.length === 1) {
+            returnValue = `0${day}`;
+        } else {
+            returnValue = day;
+        }
+        return returnValue;
     }
 
 
 
 
     return (
-        <>
-            <h3>Get data from API</h3>
-            <label>Scegli da quale server vuoi caricare i dati</label>
-            <select onChange={(e) => {
-                setServerToLoad(e.target.value)
-            }}>
-                <option value="table">
-                    TableServer
+        <> { isLoaded === "Not loaded" &&
+            <div>
+                <h3>Get data from API</h3>
+                <label>Scegli da quale server vuoi caricare i dati</label>
+                <select onChange={(e) => {
+                    setServerToLoad(e.target.value)
+                }}>
+                    <option value="table">
+                        TableServer
                 </option>
-                <option value="others">
-                    Altri
+                    <option value="others">
+                        Altri
                 </option>
-            </select>
-            {
-                serverToLoad === "table" &&
-                <div>
-                    <h4>Get data from our server</h4>
-                    <form className={style.getMyServerFrom} >
-                        <label >Scegli la banca dati:</label>
-                        <select onChange={(e) => {
-                            setDataSet(e.target.value)
-                        }}>
-                            <option value="meteo">
-                                Meteo
-                    </option>
-                            <option value="covid">
-                                Covid
-                    </option>
-                            <option value="saved">
-                                Saved Table
-                    </option>
-                        </select>
-                        <br />
-                        {
-                            (dataSet === "meteo" || dataSet === "covid") &&
-                            <div>
-                                <select onChange={(e) => {setRegion(e.target.value); console.log(e.target.value)}}>
-                                    {regionOptions}
-                                </select>
-                                <span>/</span>
-                                <select onChange={(e) => {setYear(e.target.value); console.log(e.target.value)}}>
-                                    <option value="2020">
-                                        2020
-                                    </option>
-                                    <option value="2021">
-                                        2021
-                                    </option>
-                                </select>
-                                <span>/</span>
-                                <select onChange={(e) => {setMonth(e.target.value); console.log(e.target.value) }}>
-                                    {monthOptions}
-                                </select>
-                                <span>/</span>
-                                <input type="number" onChange={(e)=>{setDay(e.target.value)}}/>
-                            </div>
-                        }
-                        {
-                            dataSet === "saved" &&
-                            <div>
-                                <label>Inserisci il nome della tabella salvata: </label>
-                                <input type="text" onChange={(e) => {
-                                    setSavedName(e.target.value);
-                                }} />
-                            </div>
-                        }
-                        {
-                            dataSet === "covid" &&
-                            <div>
+                </select>
 
-                            </div>
-                        }
-                    </form>
+                {
+                    serverToLoad === "table" &&
+                    <div>
+                        <h4>Get data from our server</h4>
+                        <form className={style.getMyServerFrom} >
+                            <label >Scegli la banca dati:</label>
+                            <select onChange={(e) => {
+                                setDataSet(e.target.value)
+                            }}>
+                                <option value="meteo">
+                                    Meteo
+                    </option>
+                                <option value="covid">
+                                    Covid
+                    </option>
+                                <option value="saved">
+                                    Saved Table
+                    </option>
+                            </select>
+                            <br />
+                            {
+                                (dataSet === "meteo" || dataSet === "covid") &&
+                                <div className={style.paramsDiv}>
+                                    <label>Seleziona una regione: </label>
+                                    <select onChange={(e) => { setRegion(e.target.value); console.log(e.target.value) }}>
+                                        {regionOptions}
+                                    </select>
+                                    <br />
+                                    <label>Seleziona un anno: </label>
+                                    <select onChange={(e) => { setYear(e.target.value); console.log(e.target.value) }}>
+                                        <option value="2020">
+                                            2020
+                                    </option>
+                                        <option value="2021">
+                                            2021
+                                    </option>
+                                    </select>
+                                    <br />
+                                    <label>Seleziona un mese: </label>
+                                    <select onChange={(e) => { setMonth(e.target.value); console.log(e.target.value) }}>
+                                        {monthOptions}
+                                    </select>
+                                    <br />
+                                    <label>Seleziona un giorno: </label>
+                                    <input type="number" defaultValue={1} onChange={(e) => { setDay(convertDay(e.target.value)) }} />
+                                </div>
+                            }
+                            {
+                                dataSet === "saved" &&
+                                <div>
+                                    <label>Inserisci il nome della tabella salvata: </label>
+                                    <input type="text" onChange={(e) => {
+                                        setSavedName(e.target.value);
+                                    }} />
+                                </div>
+                            }
+                            {
+                                dataSet === "covid" &&
+                                <div>
+
+                                </div>
+                            }
+                        </form>
+                    </div>
+                }
+                {
+                    serverToLoad === "others" &&
+                    <div>
+                        <h4>Get data from external API</h4>
+                        <form>
+                            <label>Choose format</label>
+                            <select className={style.formatSelect} value={format} onChange={(e) => setFormat(e.target.value)}>
+                                <option value="JSON" default>JSON</option>
+                                <option value="CSV" default>CSV</option>
+                                <option value="SSV" default>SSV</option>
+                            </select>
+                            <br />
+
+                            <input type="text" placeholder="URL..." onChange={e => setExternalUrl(e.target.value)} />
+                            <br />
+                        </form>
+                    </div>
+                }
+                <div className={style.submitButton} onClick={handleSubmit}>GET</div>
+            </div>
+        }
+            {
+                isLoaded === "loading" &&
+                <Loader
+                    type="Puff"
+                    color="#00BFFF"
+                    height={100}
+                    width={100}
+                />
+            }
+            { isLoaded === "Loaded" &&
+                <div>
+                    <p>
+                        Your data have been loaded. View your table or go back and load a different dataset.
+                    </p>
+                    <div className={style.buttonStyle} onClick={() => { setIsLoaded("Not loaded") }}>Go Back</div>
+                    <Link to="/view-table">
+                        <div className={style.buttonStyle}>View your Table</div>
+                    </Link>
                 </div>
+
             }
             {
-                serverToLoad === "others" &&
+                isLoaded === "error" &&
                 <div>
-                    <h4>Get data from external API</h4>
-                    <form>
-                        <label>Choose format</label>
-                        <select className={style.formatSelect} value={format} onChange={(e) => setFormat(e.target.value)}>
-                            <option value="JSON" default>JSON</option>
-                            <option value="CSV" default>CSV</option>
-                            <option value="SSV" default>SSV</option>
-                        </select>
-                        <br />
-
-                        <input type="text" placeholder="URL..." onChange={e => setExternalUrl(e.target.value)} />
-                        <br />
-                    </form>
+                    <p className={style.errorMessage}>
+                        An error occurred in data loading. Data could not be available or server could be down. Set different options or try later.
+                </p>
+                    <div className={style.buttonStyle} onClick={() => { setIsLoaded("Not loaded") }}>Go Back</div>
                 </div>
+
             }
-            <div className={style.submitButton} onClick={handleSubmit}>GET</div>
-            <p>Loading state: {isLoaded}</p>
+
         </>
     )
 }

@@ -2,7 +2,8 @@ import React from "react";
 import style from "./VizOption.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { loadKeys, hideCol, showCol, selectCol, deselectCol, popColData, popCol, popColSel } from "../../reduxStateManager/actions";
-import MergeTable  from "../MergeTable/MergeTable";
+import MergeTable from "../MergeTable/MergeTable";
+import ContextMenu from "../ContextMenu/ContextMenu";
 
 function VizOptions() {
 
@@ -56,21 +57,23 @@ function VizOptions() {
     const checkBoxes = loadedKeys.map((key) => {
         return (
             <div className={style.halfBox} key={key.accessor}>
-            <label>{key.accessor}</label>
-            <input type="checkbox" value={key.id} defaultChecked onChange={(e) => {handleCheckBoxchange(e, key.accessor)}}/>
+                <label>{key.accessor}</label>
+                <input type="checkbox" value={key.id} defaultChecked onChange={(e) => { handleCheckBoxchange(e, key.accessor) }} />
             </div>
         )
     })
 
     // un array di elementi per le colonne selzionate
     const selectedColToViz = selectedCol.map((col => {
-        return(
-            <li key ={col}>
+        return (
+            <li key={col}>
                 {col}
-                <button onClick={()=>{deleteCol(col)}}>Delete column</button>
+                <button onClick={() => { deleteCol(col) }}>Delete column</button>
+                <button onClick={(e) => { deselectColClick(e, col) }}>Deselect</button>
             </li>
         )
     }))
+
 
     function deleteCol(col) {
         // togliere dai dati 
@@ -92,22 +95,61 @@ function VizOptions() {
     // quando cambio le colonne selezionanate, cambio anche l'header da visualizzare
     React.useEffect(() => {
         setMyKeys(setKeys);
-    }, [selectedCol,loadedTable])
+        console.log('bla');
+    }, [selectedCol, loadedTable])
 
+    const [contextX, setContextX] = React.useState("0px");
+    const [contextY, setContextY] = React.useState("0px");
+
+    var contextShow = [];
+
+    const clickRef = React.useRef();
+
+    function displayContextMenu(e, col) {
+        e.preventDefault();
+        console.log('ciao');
+        let bounds = clickRef.current.getBoundingClientRect();
+        let xPos = e.clientX - bounds.left;
+        let yPos = e.clientY - bounds.top;
+        setContextX(xPos);
+        setContextY(yPos);
+        if (contextShow.includes(col)) {
+            contextShow = contextShow.filter((el) => el != col)
+        } else {
+            contextShow.push(col);
+        }
+        setMyKeys(setKeys);
+    }
 
 
     // questa funzione è chiamata quando cambio le colonne selezionate, per aggiornare l'header
     const setKeys = () => {
         return loadedKeys.map((col) => {
             return {
-                Header: <><p>{col.accessor}</p> {
-                    !checkIfColumnIsSelected(col.id) &&
-                    <button className={style.buttonSelect} onClick={e => { selectColClick(e, col) }}>Select</button>
-                }
+                Header: <div ref={clickRef} onContextMenu={(e) => { displayContextMenu(e, col.accessor) }} style={{ position: "relative" }}>
+                    {
+                        contextShow.includes(col.accessor) &&
+                        <ul onClick={(e) => { e.preventDefault(); e.stopPropagation() }} style={{ position: "absolute", top: contextY, left: contextX, background: "#fff" }} className={style.contextMenu}>
+                            <li>
+                                Select 
+                            </li>
+                            <li>
+                                Hide 
+                            </li>
+                            <li>
+                                Delete
+                            </li>
+                        </ul>
+                    }
+                    <p>{col.accessor}</p>
+                    {
+                        !checkIfColumnIsSelected(col.id) &&
+                        <button className={style.buttonSelect} onClick={e => { selectColClick(e, col.id) }}>Select</button>
+                    }
                     {
                         checkIfColumnIsSelected(col.id) &&
-                        <button className={style.buttonSelect} onClick={e => { deselectColClick(e, col) }}> Deselect </button>
-                    } </>,
+                        <button className={style.buttonSelect} onClick={e => { deselectColClick(e, col.id) }}> Deselect </button>
+                    } </div>,
                 accessor: parseInt(col.accessor, 10) || col.accessor,
                 show: col.show,
                 selected: checkIfColumnIsSelected(col.id),
@@ -139,21 +181,24 @@ function VizOptions() {
     // funzione che si triggera quando clicco sul bottone di selzione di una colonna
     function selectColClick(e, key) {
         e.preventDefault();
-        dispatchSelectCol(key.id);
+        dispatchSelectCol(key);
     }
     // deseleziono la colonna 
     function deselectColClick(e, col) {
         e.preventDefault();
-        dispatchDeselectCol(col.id);
+        dispatchDeselectCol(col);
     }
 
 
     return (
         <div className={style.toVisualDiv}>
             <div className={style.halfBox}>
-                    <h3>Selected Columns:</h3>
-                    {selectedColToViz}
-                    {
+                <h3>Selected Columns:</h3>
+                {selectedColToViz}
+                {(selectedColToViz.length === 0) &&
+                    <p>Non ci sono colonne selezionate.</p>
+                }
+                {
                     selectedCol.length !== 0 &&
                     <MergeTable>
 
@@ -162,7 +207,7 @@ function VizOptions() {
             </div>
             <div className={style.halfBox}>
                 <h3>Visualization Options</h3>
-                <button onClick = {() => {setShowPanel(!showPanel)}}>Show/Hide Columns</button>
+                <button onClick={() => { setShowPanel(!showPanel) }}>Show/Hide Columns</button>
                 {showPanel &&
                     <div>
                         {checkBoxes}

@@ -6,13 +6,16 @@ import style from "./App.module.css";
 function App() {
   return (
     <div>
-      <h1 className={style.titleProject}>
-        My Table Project
-      </h1>
+      <div className={style.titleBox}>
+        <h1 className={style.titleProject}>
+          My Table Project
+        </h1>
+      </div>
+
       <BrowserRouter>
         <Switch>
-          <Route path="/" exact component={Home}/>
-          <Route path="/view-table" exact component={ViewData}/>
+          <Route path="/" exact component={Home} />
+          <Route path="/view-table" exact component={ViewData} />
         </Switch>
       </BrowserRouter>
     </div>

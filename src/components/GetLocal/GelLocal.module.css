@@ -2,3 +2,16 @@
     margin-bottom:15px;
     margin-left:15px;
 }
+
+.buttonStyle{
+    font-size: 20px;
+    background-color: #388a7f;
+    font-weight: bold;
+    color:#fff;
+    display: inline-block;
+    border-radius:2px;
+    margin-right:20px;
+    padding:5px 15px;
+    margin-bottom:20px;
+    cursor: pointer;
+}

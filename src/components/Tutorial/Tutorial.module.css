@@ -8,14 +8,14 @@
 
 .tutorialStep{
     position:relative;
-    background-color: #D4D6B9;
-    border-radius: 5px;
+    background-color: #ffffff;
     border:none;
-    box-shadow: 0px 0px 7px 2px #66717E;
-    margin:20px 20px;
+    margin: 50px 15px 20px 15px;
     width:calc(33.3333vw - 40px);
-    padding:25px;
+    padding:30px;
     transition: 0.2s;
+    border:2px solid #042650;
+    border-radius: 2px;
 }
 
 .tutorialStep:hover{

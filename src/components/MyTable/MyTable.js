@@ -109,7 +109,7 @@ function MyTable() {
 
                 </table>
 
-                <div className="pagination">
+                <div className={style.pagination}>
                     <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
                         {'<<'}
                     </button>{' '}

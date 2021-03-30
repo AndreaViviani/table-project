@@ -3,7 +3,7 @@ import GetAPI from "../GetAPI/GetAPI"
 import GetLocal from "../GetLocal/GetLocal";
 import { Transition } from "react-transition-group";
 import React from "react";
-import {Link} from "react-router-dom";
+
 
 const duration = 1000;
 const defaultStyle = {
@@ -81,9 +81,7 @@ function Tutorial() {
 
                 </Transition>
             </div>
-            <Link to="/view-table">
-                <div className={style.viewTableCTA}>View your Table >></div>
-            </Link>
+            
             
         </div>
     )

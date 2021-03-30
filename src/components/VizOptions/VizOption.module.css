@@ -14,10 +14,9 @@
 
 .toVisualDiv{
     margin:20px 10px;
-    background-color: #D4D6B9;
-    border-radius: 5px;
-    border:none;
-    box-shadow: 0px 0px 7px 2px #66717E;
+    background-color: #ffffff;
+    border:2px solid #042650;
+    border-radius: 2px;
     padding:10px;
     display: flex;
     align-items: flex-start ;
@@ -29,4 +28,24 @@
 .halfBox{
     width:50%;
     display: inline-block;
+}
+
+button{
+    font-size: 16px;
+    background-color: #388a7f;
+    font-weight: bold;
+    color:#fff;
+    display: inline-block;
+    border-radius:2px;
+    border:none;
+    margin:0 10px;
+    padding:5px 15px;
+    margin-bottom:10px;
+    cursor: pointer;
+}
+
+.contextMenu{
+    background-color: #ffffff;
+    border: 1px #042650 solid;
+    padding:1rem;
 }
