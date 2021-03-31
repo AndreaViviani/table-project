@@ -1,9 +1,7 @@
 import React from "react";
 import style from "./VizOption.module.css";
 import { useSelector, useDispatch } from "react-redux";
-import { loadKeys, hideCol, showCol, selectCol, deselectCol, popColData, popCol, popColSel } from "../../reduxStateManager/actions";
-import MergeTable from "../MergeTable/MergeTable";
-import ContextMenu from "../ContextMenu/ContextMenu";
+import { loadKeys, selectCol, deselectCol, popColData, popCol, popColSel } from "../../reduxStateManager/actions";
 
 function VizOptions() {
 
@@ -13,12 +11,6 @@ function VizOptions() {
 
     const dispatchKeys = (keysToLoad) => {
         dispatch(loadKeys(keysToLoad));
-    }
-    const dispatchHideCol = (colToShowId) => {
-        dispatch(hideCol(colToShowId));
-    }
-    const dispatchShowCol = (colToShowId) => {
-        dispatch(showCol(colToShowId));
     }
     const dispatchSelectCol = (colToSelect) => {
         dispatch(selectCol(colToSelect))
@@ -49,9 +41,6 @@ function VizOptions() {
     //setto uno stato locale per l'header da visualizzare
     const [myKeys, setMyKeys] = React.useState(loadedKeys);
 
-    //uno stato per la visdualizzazione del pannello Hide/show
-
-    const [showPanel, setShowPanel] = React.useState(false);
 
     //stato per il controllo dei context menu
     const [contextShow, setContextShow] = React.useState([]);
@@ -59,24 +48,6 @@ function VizOptions() {
     //ref per il click destro
     const clickRef = React.useRef();
 
-    // const per le checkbox Show/hide
-    const checkBoxes = loadedKeys.map((key) => {
-        return (
-            <div className={style.halfBox} key={key.accessor}>
-                <label>{key.accessor}</label>
-                <input type="checkbox" value={key.id} checked={key.show} onChange={(e) => { handleCheckBoxchange(e, key.accessor) }} />
-            </div>
-        )
-    })
-
-    //blocco scroll se l'overlay è aperto
-    React.useEffect(() => {
-        if (showPanel) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "scroll";
-        }
-    }, [showPanel])
 
 
     /*dallo stato locale poi facciamo derivare quello globale, in questo useffect metto anche la creazione degli input */
@@ -209,14 +180,6 @@ function VizOptions() {
         })
     }
 
-    // funzione che si triggera all'onchange delle checkboxes
-    function handleCheckBoxchange(event, key) {
-        if (event.target.checked) {
-            dispatchShowCol(event.target.value);
-        } else {
-            dispatchHideCol(event.target.value);
-        }
-    }
 
     // controllo se una colonna è selezionata per decidere come visualizzare l'header
     function checkIfColumnIsSelected(col) {
@@ -249,28 +212,6 @@ function VizOptions() {
 
                 </div>
             }
-            <div className={style.toVisualDiv}>
-                <div>
-                    <h3>Commands:</h3>
-                    {
-                        selectedCol.length !== 0 &&
-                        <MergeTable>
-
-                        </MergeTable>
-                    }
-                    <button onClick={(e) => { setShowPanel(!showPanel) }}>Show/Hide Columns</button>
-                    {showPanel &&
-                        <div className={style.overlay} onClick={(e) => { setShowPanel(false) }}>
-                            <div className={style.showPanel} onClick={(e) => { e.stopPropagation() }}>
-                                <h3>
-                                    Hide/Show columns:
-                            </h3>
-                                {checkBoxes}
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
         </>
     )
 }

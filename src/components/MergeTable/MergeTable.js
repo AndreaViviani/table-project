@@ -2,10 +2,11 @@ import React from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { loadTable, loadKeys } from "../../reduxStateManager/actions";
-import produce from "immer";
 
 
-function MergeTable() {
+function MergeTable(props) {
+
+    const {isTableLoading, onTableLoadingChange} = props;
 
     const loadedTable = useSelector(state => state.loadedTable);
     const selectedCol = useSelector(state => state.selectedCol);
@@ -17,7 +18,6 @@ function MergeTable() {
     const [dataset, setDataset] = React.useState('');
 
     var dataReady = false;
-
 
     const myNewData = [];
 
@@ -36,7 +36,7 @@ function MergeTable() {
     }
 
     function getMeteo() {
-        console.log("getMeteo");
+        onTableLoadingChange(true);
         for (let i = 0; i < loadedTable.length; i++) {
             let myNewObj = {};
             const data = loadedTable[i].data;
@@ -53,7 +53,8 @@ function MergeTable() {
             }
             axios.get(url)
                 .then(
-                    (res) => {console.log(res.data);
+                    (res) => {
+                        console.log(res.data);
                         myNewObj = { ...myNewObj, ...res.data };
                         myNewData.push(myNewObj);
                         console.log(i);
@@ -61,7 +62,7 @@ function MergeTable() {
                             console.log(myNewData);
                             dispatchKeys(Object.keys(myNewData[0]).map((key) => {
                                 return {
-                                    Header:<p>{key}</p> ,
+                                    Header: <p>{key}</p>,
                                     accessor: parseInt(key, 10) || key,
                                     key: key,
                                     show: true,
@@ -69,6 +70,7 @@ function MergeTable() {
                                 }
                             }));
                             dispatchLoad(myNewData);
+                            onTableLoadingChange(false);
                         }
                     }
                 )
@@ -82,8 +84,6 @@ function MergeTable() {
     React.useEffect(() => {
         if (dataReady) {
             dispatchLoad(myNewData);
-            console.log(myNewData);
-            //dispatchKeys(Object.keys(myNewData[0]));
         }
     }, [dataReady])
 
@@ -101,35 +101,37 @@ function MergeTable() {
     }
 
     return (
-        <>
-            <button onClick={() => {
-                setWantToExtend(true);
-            }}>
-                Extend with selected columns
+        <> 
+            <div style={{display:"inline-block"}}>
+                <button onClick={() => {
+                    setWantToExtend(true);
+                }}>
+                    Extend with selected columns
         </button>
-            {
-                wantToExtend &&
-                <>
-                    <select onChange={(e) => {
-                        handleChange(e)
-                    }}>
-                        <option value="">select dataset</option>
-                        <option value='meteo'>
-                            Meteo.it
+                {
+                    wantToExtend &&
+                    <>
+                        <select onChange={(e) => {
+                            handleChange(e)
+                        }}>
+                            <option value="">select dataset</option>
+                            <option value='meteo'>
+                                Meteo.it
                 </option>
-                        <option value=''>
-                            Altro dataset
+                            <option value=''>
+                                Altro dataset
                 </option>
-                        <option value=''>
-                            Altro dataset
+                            <option value=''>
+                                Altro dataset
                 </option>
-                    </select>
-                    <button onClick={() => {
-                        selectDataset();
-                    }}>Extend</button>
-                </>
-            }
+                        </select>
+                        <button onClick={() => {
+                            selectDataset();
+                        }}>Extend</button>
+                    </>
+                }
 
+            </div>
         </>
     )
 }
