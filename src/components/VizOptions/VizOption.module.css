@@ -42,10 +42,42 @@ button{
     padding:5px 15px;
     margin-bottom:10px;
     cursor: pointer;
+    z-index: 1000;
 }
 
 .contextMenu{
     background-color: #ffffff;
     border: 1px #042650 solid;
     padding:1rem;
+    z-index: 10;
+}
+
+.overlay{
+    position:absolute;
+    top:0;
+    left:0;
+    height: 100%;
+    width:100vw;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.showPanel{
+    background-color: white;
+    border-radius:2px;
+    padding:1rem 2rem 2rem 2rem;
+    z-index:200;
+    display: inline-block;
+    width:600px;
+}
+.selectedDiv {
+    width:100%;
+    height:2rem;
+}
+
+.hideContext{
+    position:absolute;
+    width:100vw;
+    height:100%;
 }

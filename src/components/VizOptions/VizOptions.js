@@ -53,26 +53,45 @@ function VizOptions() {
 
     const [showPanel, setShowPanel] = React.useState(false);
 
+    //stato per il controllo dei context menu
+    const [contextShow, setContextShow] = React.useState([]);
+
+    //ref per il click destro
+    const clickRef = React.useRef();
+
     // const per le checkbox Show/hide
     const checkBoxes = loadedKeys.map((key) => {
         return (
             <div className={style.halfBox} key={key.accessor}>
                 <label>{key.accessor}</label>
-                <input type="checkbox" value={key.id} defaultChecked onChange={(e) => { handleCheckBoxchange(e, key.accessor) }} />
+                <input type="checkbox" value={key.id} checked={key.show} onChange={(e) => { handleCheckBoxchange(e, key.accessor) }} />
             </div>
         )
     })
 
-    // un array di elementi per le colonne selzionate
-    const selectedColToViz = selectedCol.map((col => {
-        return (
-            <li key={col}>
-                {col}
-                <button onClick={() => { deleteCol(col) }}>Delete column</button>
-                <button onClick={(e) => { deselectColClick(e, col) }}>Deselect</button>
-            </li>
-        )
-    }))
+    //blocco scroll se l'overlay è aperto
+    React.useEffect(() => {
+        if (showPanel) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "scroll";
+        }
+    }, [showPanel])
+
+
+    /*dallo stato locale poi facciamo derivare quello globale, in questo useffect metto anche la creazione degli input */
+    React.useEffect(
+        () => {
+            dispatchKeys(myKeys);
+        }, [myKeys]
+    )
+
+
+
+    // quando cambio le colonne selezionanate, cambio anche l'header da visualizzare
+    React.useEffect(() => {
+        setMyKeys(setKeys);
+    }, [selectedCol, loadedTable, contextShow])
 
 
     function deleteCol(col) {
@@ -85,71 +104,103 @@ function VizOptions() {
         dispatchPopSel(col);
     }
 
-    /*dallo stato locale poi facciamo derivare quello globale, in questo useffect metto anche la creazione degli input */
-    React.useEffect(
-        () => {
-            dispatchKeys(myKeys);
-        }, [myKeys]
-    )
+    //controllo se devo mostrare un context menu in base alla colonna
+    function checkIfContext(col) {
+        for (const el of contextShow) {
+            if (el.name === col) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-    // quando cambio le colonne selezionanate, cambio anche l'header da visualizzare
-    React.useEffect(() => {
-        setMyKeys(setKeys);
-        console.log('bla');
-    }, [selectedCol, loadedTable])
-
-    const [contextX, setContextX] = React.useState("0px");
-    const [contextY, setContextY] = React.useState("0px");
-
-    var contextShow = [];
-
-    const clickRef = React.useRef();
-
+    // gestisco il click destro sull'header della colonna: nascondo o mostro il context menu
     function displayContextMenu(e, col) {
         e.preventDefault();
-        console.log('ciao');
         let bounds = clickRef.current.getBoundingClientRect();
         let xPos = e.clientX - bounds.left;
         let yPos = e.clientY - bounds.top;
-        setContextX(xPos);
-        setContextY(yPos);
-        if (contextShow.includes(col)) {
-            contextShow = contextShow.filter((el) => el != col)
+        if (checkIfContext(col)) {
+            const newContextShow = [...contextShow];
+            for (let i = 0; i < newContextShow.length; i++) {
+                if (newContextShow[i].name === col) {
+                    newContextShow.splice(i, 1);
+                }
+            }
+            console.log(contextShow);
+            setContextShow(newContextShow);
         } else {
-            contextShow.push(col);
+            const newContextShow = [...contextShow];
+            const contextToPush = { name: col, xPos: xPos, yPos: yPos };
+            newContextShow.push(contextToPush);
+            console.log(contextShow);
+            setContextShow(newContextShow);
         }
-        setMyKeys(setKeys);
     }
+
+    //funzione per nascondere tutti i context menu
+    function hideAllContext() {
+        setContextShow([]);
+    }
+
+    // trovare le coordinate di un context menu in base alla colonna
+    function findContextCoord(col) {
+        let xPos = "0px";
+        let yPos = "0px";
+        for (const el of contextShow) {
+            if (el.name === col) {
+                xPos = el.xPos;
+                yPos = el.yPos;
+            }
+        }
+        return xPos, yPos;
+    }
+
 
 
     // questa funzione è chiamata quando cambio le colonne selezionate, per aggiornare l'header
     const setKeys = () => {
         return loadedKeys.map((col) => {
             return {
-                Header: <div ref={clickRef} onContextMenu={(e) => { displayContextMenu(e, col.accessor) }} style={{ position: "relative" }}>
+                Header: <div ref={clickRef} onContextMenu={(e) => { displayContextMenu(e, col.accessor) }} style={{ position: "relative" }} onClick={(e) => { hideAllContext() }}>
                     {
-                        contextShow.includes(col.accessor) &&
-                        <ul onClick={(e) => { e.preventDefault(); e.stopPropagation() }} style={{ position: "absolute", top: contextY, left: contextX, background: "#fff" }} className={style.contextMenu}>
+                        checkIfContext(col.accessor) &&
+                        <ul onClick={(e) => { e.stopPropagation() }} style={{ position: "absolute", top: findContextCoord(col.accessor)[0], left: findContextCoord(col.accessor)[1], background: "#fff" }} className={style.contextMenu}>
+                            {
+                                !checkIfColumnIsSelected(col.id) &&
+                                <li>
+                                    <button onClick={(e) => { displayContextMenu(e, col.accessor); selectColClick(e, col.id) }} className={style.buttonSelect}>Select</button>
+                                </li>
+                            }
+                            {
+                                checkIfColumnIsSelected(col.id) &&
+                                <li>
+                                    <button onClick={(e) => { displayContextMenu(e, col.accessor); deselectColClick(e, col.id) }} className={style.buttonSelect}>Deselect</button>
+                                </li>
+                            }
+
                             <li>
-                                Select 
+                                <button className={style.buttonSelect}>Hide</button>
                             </li>
                             <li>
-                                Hide 
-                            </li>
-                            <li>
-                                Delete
+                                <button onClick={() => { deleteCol(col) }} className={style.buttonSelect}>Delete</button>
                             </li>
                         </ul>
                     }
                     <p>{col.accessor}</p>
                     {
-                        !checkIfColumnIsSelected(col.id) &&
-                        <button className={style.buttonSelect} onClick={e => { selectColClick(e, col.id) }}>Select</button>
+                        checkIfColumnIsSelected(col.id) &&
+                        <div className={style.selectedDiv}>
+                            Selected
+                        </div>
                     }
                     {
-                        checkIfColumnIsSelected(col.id) &&
-                        <button className={style.buttonSelect} onClick={e => { deselectColClick(e, col.id) }}> Deselect </button>
-                    } </div>,
+                        !checkIfColumnIsSelected(col.id) &&
+                        <div className={style.selectedDiv}>
+
+                        </div>
+                    }
+                </div>,
                 accessor: parseInt(col.accessor, 10) || col.accessor,
                 show: col.show,
                 selected: checkIfColumnIsSelected(col.id),
@@ -191,32 +242,36 @@ function VizOptions() {
 
 
     return (
-        <div className={style.toVisualDiv}>
-            <div className={style.halfBox}>
-                <h3>Selected Columns:</h3>
-                {selectedColToViz}
-                {(selectedColToViz.length === 0) &&
-                    <p>Non ci sono colonne selezionate.</p>
-                }
-                {
-                    selectedCol.length !== 0 &&
-                    <MergeTable>
+        <>
+            {
+                contextShow.length > 0 &&
+                <div className={style.hideContext} onClick={(e) => { hideAllContext(); }}>
 
-                    </MergeTable>
-                }
+                </div>
+            }
+            <div className={style.toVisualDiv}>
+                <div>
+                    <h3>Commands:</h3>
+                    {
+                        selectedCol.length !== 0 &&
+                        <MergeTable>
+
+                        </MergeTable>
+                    }
+                    <button onClick={(e) => { setShowPanel(!showPanel) }}>Show/Hide Columns</button>
+                    {showPanel &&
+                        <div className={style.overlay} onClick={(e) => { setShowPanel(false) }}>
+                            <div className={style.showPanel} onClick={(e) => { e.stopPropagation() }}>
+                                <h3>
+                                    Hide/Show columns:
+                            </h3>
+                                {checkBoxes}
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
-            <div className={style.halfBox}>
-                <h3>Visualization Options</h3>
-                <button onClick={() => { setShowPanel(!showPanel) }}>Show/Hide Columns</button>
-                {showPanel &&
-                    <div>
-                        {checkBoxes}
-                    </div>
-                }
-
-            </div>
-        </div>
-
+        </>
     )
 }
 
