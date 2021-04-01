@@ -84,15 +84,21 @@ function GetLocal() {
             loadingState === "Not loaded" &&
             <div>
                 <h3>Get data from File System</h3>
-                <label>Choose format</label>
-                <select className={style.formatSelect} value={format} onChange={handleChangeFormat}>
-                    <option value="JSON" default>JSON</option>
-                    <option value="CSV" default>CSV</option>
-                    <option value="SSV" default>SSV</option>
-                </select>
+                <label>Choose format: </label>
+                <div className={"customSelect"}>
+                    <select className={style.formatSelect} value={format} onChange={handleChangeFormat}>
+                        <option value="JSON" default>JSON</option>
+                        <option value="CSV" default>CSV</option>
+                        <option value="SSV" default>SSV</option>
+                    </select>
+                </div>
+
                 <br />
-                <input type="file" onChange={e => handleFile(e)} />
-                <p>Loading state: <span>{loadingState}</span></p>
+                <div className={"customFile"}>
+                    <p className={"fileText"}>Scegli file</p>
+                    <input type="file" onChange={e => handleFile(e)} />
+                </div>
+                
             </div>
         }{
                 loadingState === "Loading" &&

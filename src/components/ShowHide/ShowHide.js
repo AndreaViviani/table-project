@@ -1,6 +1,6 @@
 import React from "react";
-import {hideCol, showCol} from "../../reduxStateManager/actions";
-import {useSelector, useDispatch} from "react-redux";
+import { hideCol, showCol } from "../../reduxStateManager/actions";
+import { useSelector, useDispatch } from "react-redux";
 import style from "./ShowHide.module.css";
 
 function ShowHide() {
@@ -8,8 +8,8 @@ function ShowHide() {
     //dispatcher per nascondere e mostrare le colonne
 
     const dispatch = useDispatch()
-    const dispatchHideCol = (colToShowId) => {
-        dispatch(hideCol(colToShowId));
+    const dispatchHideCol = (colToHideId) => {
+        dispatch(hideCol(colToHideId));
     }
     const dispatchShowCol = (colToShowId) => {
         dispatch(showCol(colToShowId));
@@ -25,9 +25,13 @@ function ShowHide() {
     // const per le checkbox Show/hide
     const checkBoxes = loadedKeys.map((key) => {
         return (
-            <div className={style.halfBox} key={key.accessor}>
-                <label>{key.accessor}</label>
-                <input type="checkbox" value={key.id} checked={key.show} onChange={(e) => { handleCheckBoxchange(e, key.accessor) }} />
+            <div className={style.checkContainer} key={key.accessor}>
+
+                    <label>{key.accessor} </label>
+                    <label className={"customCheckbox"}>
+                        <input hidden type="checkbox" value={key.id} checked={key.show} onChange={(e) => { handleCheckBoxchange(e, key.accessor) }}/>
+                        <span></span>
+                    </label>
             </div>
         )
     })
@@ -53,7 +57,7 @@ function ShowHide() {
 
     return (
         <>
-        
+
             <button onClick={(e) => { setShowPanel(!showPanel) }}>Show/Hide Columns</button>
             { showPanel &&
                 <div className={style.overlay} onClick={(e) => { setShowPanel(false) }}>

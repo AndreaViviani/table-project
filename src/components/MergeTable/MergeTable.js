@@ -6,7 +6,7 @@ import { loadTable, loadKeys } from "../../reduxStateManager/actions";
 
 function MergeTable(props) {
 
-    const {isTableLoading, onTableLoadingChange} = props;
+    const { isTableLoading, onTableLoadingChange } = props;
 
     const loadedTable = useSelector(state => state.loadedTable);
     const selectedCol = useSelector(state => state.selectedCol);
@@ -101,8 +101,8 @@ function MergeTable(props) {
     }
 
     return (
-        <> 
-            <div style={{display:"inline-block"}}>
+        <>
+            <div style={{ display: "inline-block" }}>
                 <button onClick={() => {
                     setWantToExtend(true);
                 }}>
@@ -111,20 +111,23 @@ function MergeTable(props) {
                 {
                     wantToExtend &&
                     <>
-                        <select onChange={(e) => {
-                            handleChange(e)
-                        }}>
-                            <option value="">select dataset</option>
-                            <option value='meteo'>
-                                Meteo.it
+                        <div className={"customSelect"}>
+                            <select onChange={(e) => {
+                                handleChange(e)
+                            }}>
+                                <option disabled selected value="">select dataset</option>
+                                <option value='meteo'>
+                                    Meteo.it
                 </option>
-                            <option value=''>
-                                Altro dataset
+                                <option value=''>
+                                    Altro dataset
                 </option>
-                            <option value=''>
-                                Altro dataset
+                                <option value=''>
+                                    Altro dataset
                 </option>
-                        </select>
+                            </select>
+                        </div>
+
                         <button onClick={() => {
                             selectDataset();
                         }}>Extend</button>

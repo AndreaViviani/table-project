@@ -17,3 +17,10 @@
     display: inline-block;
     width:600px;
 }
+
+
+.checkContainer{
+    width:50%;
+    display: inline-block;
+    margin: 0.2rem 0;
+}

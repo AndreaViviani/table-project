@@ -197,60 +197,77 @@ function GetAPI() {
         <> { isLoaded === "Not loaded" &&
             <div>
                 <h3>Get data from API</h3>
-                <label>Scegli da quale server vuoi caricare i dati</label>
-                <select onChange={(e) => {
-                    setServerToLoad(e.target.value)
-                }}>
-                    <option value="table">
-                        TableServer
+                <label>Scegli da quale server vuoi caricare i dati:  </label>
+                <div className={"customSelect"}>
+                    <select onChange={(e) => {
+                        setServerToLoad(e.target.value)
+                    }}>
+                        <option value="table">
+                            TableServer
                 </option>
-                    <option value="others">
-                        Altri
+                        <option value="others">
+                            Altri
                 </option>
-                </select>
+                    </select>
+                </div>
+
 
                 {
                     serverToLoad === "table" &&
                     <div>
                         <h4>Get data from our server</h4>
                         <form className={style.getMyServerFrom} >
-                            <label >Scegli la banca dati:</label>
-                            <select onChange={(e) => {
-                                setDataSet(e.target.value)
-                            }}>
-                                <option value="meteo">
-                                    Meteo
+                            <label >Scegli la banca dati: </label>
+                            <div className={"customSelect"}>
+                                <select onChange={(e) => {
+                                    setDataSet(e.target.value)
+                                }}>
+                                    <option value="meteo">
+                                        Meteo
                     </option>
-                                <option value="covid">
-                                    Covid
+                                    <option value="covid">
+                                        Covid
                     </option>
-                                <option value="saved">
-                                    Saved Table
+                                    <option value="saved">
+                                        Saved Table
                     </option>
-                            </select>
+                                </select>
+                            </div>
+
+
                             <br />
                             {
                                 (dataSet === "meteo" || dataSet === "covid") &&
                                 <div className={style.paramsDiv}>
                                     <label>Seleziona una regione: </label>
-                                    <select onChange={(e) => { setRegion(e.target.value); console.log(e.target.value) }}>
-                                        {regionOptions}
-                                    </select>
+                                    <div className={"customSelect"}>
+                                        <select onChange={(e) => { setRegion(e.target.value); console.log(e.target.value) }}>
+                                            {regionOptions}
+                                        </select>
+                                    </div>
+
+
                                     <br />
                                     <label>Seleziona un anno: </label>
-                                    <select onChange={(e) => { setYear(e.target.value); console.log(e.target.value) }}>
-                                        <option value="2020">
-                                            2020
+                                    <div className={"customSelect"}>
+                                        <select onChange={(e) => { setYear(e.target.value); console.log(e.target.value) }}>
+                                            <option value="2020">
+                                                2020
                                     </option>
-                                        <option value="2021">
-                                            2021
+                                            <option value="2021">
+                                                2021
                                     </option>
-                                    </select>
+                                        </select>
+                                    </div>
+
                                     <br />
                                     <label>Seleziona un mese: </label>
-                                    <select onChange={(e) => { setMonth(e.target.value); console.log(e.target.value) }}>
-                                        {monthOptions}
-                                    </select>
+                                    <div className={"customSelect"}>
+                                        <select onChange={(e) => { setMonth(e.target.value); console.log(e.target.value) }}>
+                                            {monthOptions}
+                                        </select>
+                                    </div>
+
                                     <br />
                                     <label>Seleziona un giorno: </label>
                                     <input type="number" defaultValue={1} onChange={(e) => { setDay(convertDay(e.target.value)) }} />
@@ -279,14 +296,17 @@ function GetAPI() {
                     <div>
                         <h4>Get data from external API</h4>
                         <form>
-                            <label>Choose format</label>
-                            <select className={style.formatSelect} value={format} onChange={(e) => setFormat(e.target.value)}>
-                                <option value="JSON" default>JSON</option>
-                                <option value="CSV" default>CSV</option>
-                                <option value="SSV" default>SSV</option>
-                            </select>
-                            <br />
+                            <label>Choose format:</label>
+                            <div className={"customSelect"}>
+                                <select className={style.formatSelect} value={format} onChange={(e) => setFormat(e.target.value)}>
+                                    <option value="JSON" default>JSON</option>
+                                    <option value="CSV" default>CSV</option>
+                                    <option value="SSV" default>SSV</option>
+                                </select>
+                            </div>
 
+                            <br />
+                            <label>Inserisci l'url: </label>
                             <input type="text" placeholder="URL..." onChange={e => setExternalUrl(e.target.value)} />
                             <br />
                         </form>

@@ -21,13 +21,9 @@
     display: flex;
     align-items: flex-start ;
 }
+
 .buttonSelect{
     z-index: 10000;
-}
-
-.halfBox{
-    width:50%;
-    display: inline-block;
 }
 
 button{
@@ -44,33 +40,26 @@ button{
     cursor: pointer;
     z-index: 1000;
 }
-
+/*context menu styles*/
 .contextMenu{
     background-color: #ffffff;
     border: 1px #042650 solid;
-    padding:1rem;
     z-index: 10;
+    margin-top: 1.3rem;
+    text-align: center;
+    width:100%;
+    padding:0;
+    border-radius:2px;
 }
 
-.overlay{
-    position:absolute;
-    top:0;
-    left:0;
-    height: 100%;
-    width:100vw;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.contextMenu li {
+    padding:0.3rem;
 }
-.showPanel{
-    background-color: white;
-    border-radius:2px;
-    padding:1rem 2rem 2rem 2rem;
-    z-index:200;
-    display: inline-block;
-    width:600px;
+
+.contextMenu li:hover {
+    background-color: rgba(56, 138, 127, 0.5);
 }
+
 .selectedDiv {
     width:100%;
     height:2rem;
@@ -80,4 +69,12 @@ button{
     position:absolute;
     width:100vw;
     height:100%;
+}
+
+.selectedDiv{
+    color:#388a7f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom:0.3rem;
 }

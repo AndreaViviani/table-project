@@ -10,7 +10,7 @@
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
 
- html {
+html {
   line-height: 1.15; /* 1 */
   -webkit-text-size-adjust: 100%; /* 2 */
 }
@@ -176,7 +176,8 @@ textarea {
  */
 
 button,
-input { /* 1 */
+input {
+  /* 1 */
   overflow: visible;
 }
 
@@ -186,7 +187,8 @@ input { /* 1 */
  */
 
 button,
-select { /* 1 */
+select {
+  /* 1 */
   text-transform: none;
 }
 
@@ -350,14 +352,127 @@ template {
   display: none;
 }
 
-
 /*end of normalizing*/
 
-img{
+img {
   max-width: 100%;
   max-height: 100%;
 }
 
-body{
-  font-family:'Roboto', sans-serif;
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+/*Imput styles*/
+
+input {
+  padding: 0.25rem;
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0 0 3px 1px #388a7f;
+}
+
+input[type="file"] {
+  border: none;
+  box-shadow: none;
+}
+
+select {
+  z-index: 3;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 0 0 0 0;
+  margin: 0 !important;
+  width: 100%;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: inherit;
+  line-height: inherit;
+  outline: none;
+}
+
+.customSelect {
+  margin: 0.3rem 0.5rem;
+  position: relative;
+  width: 8rem;
+  border: none;
+  box-shadow: 0 0 3px 1px #388a7f;
+  padding: 0 0.2rem;
+  border-radius: 2px;
+  cursor: pointer;
+  display: inline-grid;
+  grid-template-areas: "select";
+  align-items: center;
+}
+
+.customSelect::after {
+  content: "";
+  width: 0.5em;
+  height: 0.5em;
+  border-left: #388a7f solid 3px;
+  border-top: #388a7f solid 3px;
+  margin: 0.5rem;
+  transform: rotate(-135deg) translateY(0.2rem);
+  justify-self: end;
+}
+
+select,
+.customSelect:after {
+  grid-area: select;
+}
+
+input[type="file"] {
+  appearance: none;
+  opacity: 0;
+  position:absolute;
+  top:0;
+  left:0;
+  width:6rem;
+  cursor: pointer;
+}
+
+.fileText {
+  margin:0;
+  cursor: pointer;
+}
+
+.customFile {
+  position:relative;
+  background-color: #388a7f;
+  font-weight: bold;
+  color: #fff;
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 2px;
+  margin-top: 15px;
+  cursor: pointer;
+  z-index: 3;
+}
+
+option[disabled] {
+  display: none;
+}
+
+.customCheckbox{
+  display: inline-flex;
+  content:"";
+  box-shadow: 0 0 3px 1px #388a7f;
+  width:1rem;
+  height:1rem;
+  position:relative;
+  justify-content: center;
+  align-items: center;
+  top:-0.3rem;
+}
+
+input[type="checkbox"]:checked + span {
+  display: inline-block;
+  border-left: #388a7f solid 3px;
+  width:0.4rem;
+  height:0.3rem;
+  border-top: #388a7f solid 3px;
+  transform: rotate(-135deg);
+  margin-bottom:0.2rem;
+  margin-right:0.05rem;
 }

@@ -12,11 +12,11 @@ function MyTable() {
     const [data, setData] = React.useState([]);
 
 
-    React.useEffect(()=>{
+    React.useEffect(() => {
         setData(allData)
     }, [allData])
 
-    React.useEffect(()=>{
+    React.useEffect(() => {
         setColumns(allColumns)
     }, [allColumns])
 
@@ -62,18 +62,18 @@ function MyTable() {
         },
         [columns]
     );
-    
+
     // questo timeout serve per evitare un bug che non sono riuscito ad evitare altrimenti,
     // senza questo, al refresh della pagina la tabella non riesce a reperire le props delle colonne per tempo e da errore
     const [canRenderCol, setCanRenderCol] = React.useState(false);
 
     React.useEffect(() => {
         const timer = setTimeout(() => {
-          setCanRenderCol(true)
+            setCanRenderCol(true)
         }, 100);
         return () => clearTimeout(timer);
-      }, []);
-    
+    }, []);
+
 
     // Render the UI for your table
     return (
@@ -83,15 +83,19 @@ function MyTable() {
 
                 <table {...getTableProps()}>
 
-                        <thead>
-                            { canRenderCol && headerGroups.map(headerGroup =>{ return (
+                    <thead>
+                        {canRenderCol && headerGroups.map(headerGroup => {
+                            return (
                                 <tr {...headerGroup.getHeaderGroupProps()}>
-                                    {headerGroup.headers.map(column => { return(
-                                        <th {...column.getHeaderProps(column.getSortByToggleProps())}>{column.render('Header')}</th>
-                                    )})}
+                                    {headerGroup.headers.map(column => {
+                                        return (
+                                            <th {...column.getHeaderProps(column.getSortByToggleProps())}>{column.render('Header')}</th>
+                                        )
+                                    })}
                                 </tr>
-                            )})}
-                        </thead>
+                            )
+                        })}
+                    </thead>
 
                     <tbody {...getTableBodyProps()}>
                         {page.map((row, i) => {
@@ -140,18 +144,21 @@ function MyTable() {
                             style={{ width: '100px' }}
                         />
                     </span>{' '}
-                    <select
-                        value={pageSize}
-                        onChange={e => {
-                            setPageSize(Number(e.target.value))
-                        }}
-                    >
-                        {[10, 20, 30, 40, 50].map(pageSize => (
-                            <option key={pageSize} value={pageSize}>
-                                Show {pageSize}
-                            </option>
-                        ))}
-                    </select>
+                    <div className={"customSelect"}>
+                        <select
+                            value={pageSize}
+                            onChange={e => {
+                                setPageSize(Number(e.target.value))
+                            }}
+                        >
+                            {[10, 20, 30, 40, 50].map(pageSize => (
+                                <option key={pageSize} value={pageSize}>
+                                    Show {pageSize}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
                 </div>
 
             </div>

@@ -8,10 +8,21 @@
   padding: 20px;
 }
 
-.cells {
+table{
+  border-spacing:0;
+  border-collapse: collapse;
+}
+
+td {
   text-align: center;
-  padding: 0.5rem 0;
-  border: solid 1px black;
+  padding: 10px;
+  border: solid 1px #042650;
+}
+
+th{
+  position:relative;
+  border:solid 2px #042650;
+  padding: 0 0.5rem;
 }
 
 .pagination {
@@ -27,3 +38,4 @@
   margin-right:5px;
   padding:0 5px;
 }
+

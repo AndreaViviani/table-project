@@ -1,7 +1,7 @@
 import React from "react";
 import style from "./VizOption.module.css";
 import { useSelector, useDispatch } from "react-redux";
-import { loadKeys, selectCol, deselectCol, popColData, popCol, popColSel } from "../../reduxStateManager/actions";
+import { loadKeys, hideCol, selectCol, deselectCol, popColData, popCol, popColSel } from "../../reduxStateManager/actions";
 
 function VizOptions() {
 
@@ -27,6 +27,9 @@ function VizOptions() {
     }
     const dispatchPopSel = (colToPop) => {
         dispatch(popColSel(colToPop));
+    }
+    const dispatchHideCol = (colToHideId) => {
+        dispatch(hideCol(colToHideId));
     }
 
     /*recupero lo stato della tabella originale, su cui fare operazioni. Non vado a cambiare questo stato in modo da poterlo usare poi per resettare*/
@@ -133,28 +136,28 @@ function VizOptions() {
     const setKeys = () => {
         return loadedKeys.map((col) => {
             return {
-                Header: <div ref={clickRef} onContextMenu={(e) => { displayContextMenu(e, col.accessor) }} style={{ position: "relative" }} onClick={(e) => { hideAllContext() }}>
+                Header: <div ref={clickRef}  className={style.headerCell} onContextMenu={(e) => { displayContextMenu(e, col.accessor) }} onClick={(e) => { hideAllContext() }}>
                     {
                         checkIfContext(col.accessor) &&
                         <ul onClick={(e) => { e.stopPropagation() }} style={{ position: "absolute", top: findContextCoord(col.accessor)[0], left: findContextCoord(col.accessor)[1], background: "#fff" }} className={style.contextMenu}>
                             {
                                 !checkIfColumnIsSelected(col.id) &&
                                 <li>
-                                    <button onClick={(e) => { displayContextMenu(e, col.accessor); selectColClick(e, col.id) }} className={style.buttonSelect}>Select</button>
+                                    <div onClick={(e) => { displayContextMenu(e, col.accessor); selectColClick(e, col.id) }} className={style.buttonSelect}>Select</div>
                                 </li>
                             }
                             {
                                 checkIfColumnIsSelected(col.id) &&
                                 <li>
-                                    <button onClick={(e) => { displayContextMenu(e, col.accessor); deselectColClick(e, col.id) }} className={style.buttonSelect}>Deselect</button>
+                                    <div onClick={(e) => { displayContextMenu(e, col.accessor); deselectColClick(e, col.id) }} className={style.buttonSelect}>Deselect</div>
                                 </li>
                             }
 
                             <li>
-                                <button className={style.buttonSelect}>Hide</button>
+                                <div onClick={()=>{dispatchHideCol(col.id)}} className={style.buttonSelect}>Hide</div>
                             </li>
                             <li>
-                                <button onClick={() => { deleteCol(col) }} className={style.buttonSelect}>Delete</button>
+                                <div onClick={() => { deleteCol(col) }} className={style.buttonSelect}>Delete</div>
                             </li>
                         </ul>
                     }
