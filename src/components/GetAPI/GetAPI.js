@@ -118,7 +118,7 @@ function GetAPI() {
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
                         dispatchDeleteSel();
-                        dispatchLoadName(`meteo-${region}-${day}/${month}/${year}`)
+                        dispatchLoadName(`meteo_${region}_${day}-${month}-${year}`)
                         setIsLoaded("Loaded");
                     })
                     .catch((err) => {
@@ -134,7 +134,7 @@ function GetAPI() {
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
                         dispatchDeleteSel();
-                        dispatchLoadName(`Covid-${region}-${day}/${month}/${year}`)
+                        dispatchLoadName(`Covid_${region}_${day}-${month}-${year}`)
                         setIsLoaded("Loaded");
                     })
                     .catch((err) => {

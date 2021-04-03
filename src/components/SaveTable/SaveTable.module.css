@@ -5,6 +5,12 @@
 .appBar {
     background-color: #388a7f;
 }
-
+.saveButton{
+    margin: 2rem 0 0 0;
+    float:right;
+}
+.clear{
+    clear: both;
+}
 
 
