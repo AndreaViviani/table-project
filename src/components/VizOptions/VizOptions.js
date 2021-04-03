@@ -117,13 +117,13 @@ function VizOptions() {
 
     function deleteContext(col) {
         const newContextShow = [...contextShow];
-            for (let i = 0; i < newContextShow.length; i++) {
-                if (newContextShow[i].name === col) {
-                    newContextShow.splice(i, 1);
-                }
+        for (let i = 0; i < newContextShow.length; i++) {
+            if (newContextShow[i].name === col) {
+                newContextShow.splice(i, 1);
             }
-            console.log(contextShow);
-            setContextShow(newContextShow);
+        }
+        console.log(contextShow);
+        setContextShow(newContextShow);
     }
 
     //funzione per nascondere tutti i context menu
@@ -154,49 +154,54 @@ function VizOptions() {
     const setKeys = () => {
         return loadedKeys.map((col) => {
             return {
-                Header: <div ref={(r)=>{handleRef(r)}}  className={style.headerCell} onContextMenu={(e) => { displayContextMenu(e, col.accessor) }} onClick={(e) => { hideAllContext() }}>
-                    {
-                        checkIfContext(col.accessor) &&
-                        <ul onClick={(e) => { e.stopPropagation() }} style={{ position: "absolute", top: findContextCoord(col.accessor)[0], left: findContextCoord(col.accessor)[1], background: "#fff" }} className={style.contextMenu}>
+                Header: <>
+
+                        <div ref={(r) => { handleRef(r) }} className={style.headerCell} onContextMenu={(e) => { displayContextMenu(e, col.accessor) }} onClick={(e) => { hideAllContext() }}>
                             {
-                                !checkIfColumnIsSelected(col.id) &&
-                                <li>
-                                    <div onClick={(e) => { displayContextMenu(e, col.accessor); selectColClick(e, col.id) }} className={style.buttonSelect}>Select</div>
-                                </li>
+                                checkIfContext(col.accessor) &&
+                                <ul onClick={(e) => { e.stopPropagation() }} style={{ position: "absolute", top: findContextCoord(col.accessor)[0], left: findContextCoord(col.accessor)[1], background: "#fff" }} className={style.contextMenu}>
+                                    {
+                                        !checkIfColumnIsSelected(col.id) &&
+                                        <li>
+                                            <div onClick={(e) => { displayContextMenu(e, col.accessor); selectColClick(e, col.id) }} className={style.buttonSelect}>Select</div>
+                                        </li>
+                                    }
+                                    {
+                                        checkIfColumnIsSelected(col.id) &&
+                                        <li>
+                                            <div onClick={(e) => { displayContextMenu(e, col.accessor); deselectColClick(e, col.id) }} className={style.buttonSelect}>Deselect</div>
+                                        </li>
+                                    }
+
+                                    <li>
+                                        <div onClick={(e) => { displayContextMenu(e, col.accessor); deleteContext(col.accessor); dispatchHideCol(col.id) }} className={style.buttonSelect}>Hide</div>
+                                    </li>
+                                    <li>
+                                        <div onClick={(e) => { displayContextMenu(e, col.accessor); deleteCol(col.id) }} className={style.buttonSelect}>Delete</div>
+                                    </li>
+                                </ul>
                             }
+                            <p>{col.accessor}</p>
                             {
                                 checkIfColumnIsSelected(col.id) &&
-                                <li>
-                                    <div onClick={(e) => { displayContextMenu(e, col.accessor); deselectColClick(e, col.id) }} className={style.buttonSelect}>Deselect</div>
-                                </li>
+                                <div className={style.selectedDiv}>
+                                    Selected
+                        </div>
                             }
+                            {
+                                !checkIfColumnIsSelected(col.id) &&
+                                <div className={style.selectedDiv}>
 
-                            <li>
-                                <div onClick={(e)=>{displayContextMenu(e, col.accessor); deleteContext(col.accessor); dispatchHideCol(col.id)}} className={style.buttonSelect}>Hide</div>
-                            </li>
-                            <li>
-                                <div onClick={(e) => {displayContextMenu(e, col.accessor); deleteCol(col.id) }} className={style.buttonSelect}>Delete</div>
-                            </li>
-                        </ul>
-                    }
-                    <p>{col.accessor}</p>
-                    {
-                        checkIfColumnIsSelected(col.id) &&
-                        <div className={style.selectedDiv}>
-                            Selected
+                                </div>
+                            }
                         </div>
-                    }
-                    {
-                        !checkIfColumnIsSelected(col.id) &&
-                        <div className={style.selectedDiv}>
-
-                        </div>
-                    }
-                </div>,
+                </>
+                ,
                 accessor: parseInt(col.accessor, 10) || col.accessor,
                 show: col.show,
                 selected: checkIfColumnIsSelected(col.id),
                 id: col.id,
+                added: col.added || false,
             }
         })
     }

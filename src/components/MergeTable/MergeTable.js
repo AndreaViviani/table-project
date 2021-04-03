@@ -64,12 +64,14 @@ function MergeTable(props) {
                         if (i === (loadedTable.length - 1)) {
                             // se ho recuperato l'ultima riga carico i dati nello stato
                             dispatchKeys(Object.keys(myNewData[0]).map((key) => {
+                                console.log(selectedCol.includes(key));
                                 return {
                                     Header: <p>{key}</p>,
                                     accessor: parseInt(key, 10) || key,
                                     key: key,
                                     show: true,
                                     id: key,
+                                    added: selectedCol.includes(key) ? false : true,
                                 }
                             }));
                             dispatchLoad(myNewData);

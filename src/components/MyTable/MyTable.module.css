@@ -22,8 +22,10 @@ td {
 th{
   position:relative;
   border:solid 2px #042650;
-  padding: 0 0.5rem;
+  padding:0 ;
+  line-height: normal;
 }
+
 
 .pagination {
   padding-top: 1rem;

@@ -88,8 +88,9 @@ function MyTable() {
                             return (
                                 <tr {...headerGroup.getHeaderGroupProps()}>
                                     {headerGroup.headers.map(column => {
+                                        console.log(column);
                                         return (
-                                            <th {...column.getHeaderProps(column.getSortByToggleProps())}>{column.render('Header')}</th>
+                                            <th className={column.added && "addedCol"} {...column.getHeaderProps(column.getSortByToggleProps())}>{column.render('Header')}</th>
                                         )
                                     })}
                                 </tr>
