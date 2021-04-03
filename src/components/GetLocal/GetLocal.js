@@ -1,8 +1,8 @@
 import React from "react";
 import style from "./GelLocal.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { loadTable, loadKeys, delSel } from "../../reduxStateManager/actions";
-import { csvJSON, ssvJSON, jsonJSON } from "./../../logicModules/formatConverter/converter";
+import { loadTable, loadKeys, delSel, loadName } from "../../reduxStateManager/actions";
+import { csvJSON, ssvJSON, jsonJSON} from "./../../logicModules/formatConverter/converter";
 import Loader from "react-loader-spinner";
 import { Link } from "react-router-dom";
 
@@ -34,6 +34,9 @@ function GetLocal() {
     const dispatchDeleteSel = () => {
         dispatch(delSel());
     }
+    const dispatchLoadName = (nameToSave) => {
+        dispatch(loadName(nameToSave));
+    }
 
     const createKeys = (table) => {
         const items = Object.keys(table[0]).map((key) => {
@@ -48,9 +51,12 @@ function GetLocal() {
         return items;
     }
 
+    //converto a seconda del formato scelto
     function handleFile(e) {
         setLoadingState("Loading")
         var file = e.target.files[0];
+        let fileName = file.name.split(" ").join("-");
+        console.log(fileName);
         var reader = new FileReader();
         reader.onload = function (event) { //on loading file.
             console.log(event.target.result);
@@ -59,12 +65,15 @@ function GetLocal() {
             switch (format) {
                 case "JSON":
                     convertedFile = jsonJSON(unconverteFile);
+                    fileName = fileName.substring(0, fileName.indexOf(".json"));
                     break;
                 case "CSV":
                     convertedFile = csvJSON(unconverteFile);
+                    fileName = fileName.substring(0, fileName.indexOf(".csv"));
                     break;
                 case "SSV":
                     convertedFile = ssvJSON(unconverteFile);
+                    fileName = fileName.substring(0, fileName.indexOf(".csv"));
                     break
                 default:
                     convertedFile = jsonJSON(unconverteFile);
@@ -73,6 +82,7 @@ function GetLocal() {
             dispatchLoad(convertedFile);
             setLoadingState("Loaded");
             dispatchKeys(createKeys(convertedFile));
+            dispatchLoadName(fileName);
             dispatchDeleteSel();
         }
         reader.readAsText(file);

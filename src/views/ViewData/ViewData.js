@@ -1,4 +1,4 @@
-import ModOptions from "../../components/ModOptions/ModOptions";
+import ModOptions from "../../components/SaveTable/SaveTable";
 import MyTable from "../../components/MyTable/MyTable";
 import React from "react";
 import Commands from "../../components/Commands/Commands";
@@ -25,10 +25,6 @@ function ViewData() {
             <VizOptions>
 
             </VizOptions>
-            {/*Component saving table*/}
-            <ModOptions>
-
-            </ModOptions>
             {/*here go all commands Component*/}
             <Commands isTableLoading={isTableLoading} onTableLoadingChange={(isTableLoading)=>{setIsTableLoading(isTableLoading)}}>
 

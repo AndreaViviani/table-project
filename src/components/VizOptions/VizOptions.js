@@ -3,6 +3,9 @@ import style from "./VizOption.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { loadKeys, hideCol, selectCol, deselectCol, popColData, popCol, popColSel } from "../../reduxStateManager/actions";
 
+
+
+
 function VizOptions() {
 
 
@@ -13,7 +16,7 @@ function VizOptions() {
         dispatch(loadKeys(keysToLoad));
     }
     const dispatchSelectCol = (colToSelect) => {
-        dispatch(selectCol(colToSelect))
+        dispatch(selectCol(colToSelect));
     };
 
     const dispatchDeselectCol = (colToDeselect) => {
@@ -49,9 +52,7 @@ function VizOptions() {
     const [contextShow, setContextShow] = React.useState([]);
 
     //ref per il click destro
-    const clickRef = React.useRef();
-
-
+    let clickRef = React.useRef(null);
 
     /*dallo stato locale poi facciamo derivare quello globale, in questo useffect metto anche la creazione degli input */
     React.useEffect(
@@ -91,6 +92,7 @@ function VizOptions() {
     // gestisco il click destro sull'header della colonna: nascondo o mostro il context menu
     function displayContextMenu(e, col) {
         e.preventDefault();
+        console.log(clickRef.current);
         let bounds = clickRef.current.getBoundingClientRect();
         let xPos = e.clientX - bounds.left;
         let yPos = e.clientY - bounds.top;
@@ -109,7 +111,19 @@ function VizOptions() {
             newContextShow.push(contextToPush);
             console.log(contextShow);
             setContextShow(newContextShow);
+            setKeys();
         }
+    }
+
+    function deleteContext(col) {
+        const newContextShow = [...contextShow];
+            for (let i = 0; i < newContextShow.length; i++) {
+                if (newContextShow[i].name === col) {
+                    newContextShow.splice(i, 1);
+                }
+            }
+            console.log(contextShow);
+            setContextShow(newContextShow);
     }
 
     //funzione per nascondere tutti i context menu
@@ -130,13 +144,17 @@ function VizOptions() {
         return xPos, yPos;
     }
 
+    const handleRef = (r) => {
+        clickRef.current = r;
+    };
+
 
 
     // questa funzione è chiamata quando cambio le colonne selezionate, per aggiornare l'header
     const setKeys = () => {
         return loadedKeys.map((col) => {
             return {
-                Header: <div ref={clickRef}  className={style.headerCell} onContextMenu={(e) => { displayContextMenu(e, col.accessor) }} onClick={(e) => { hideAllContext() }}>
+                Header: <div ref={(r)=>{handleRef(r)}}  className={style.headerCell} onContextMenu={(e) => { displayContextMenu(e, col.accessor) }} onClick={(e) => { hideAllContext() }}>
                     {
                         checkIfContext(col.accessor) &&
                         <ul onClick={(e) => { e.stopPropagation() }} style={{ position: "absolute", top: findContextCoord(col.accessor)[0], left: findContextCoord(col.accessor)[1], background: "#fff" }} className={style.contextMenu}>
@@ -154,10 +172,10 @@ function VizOptions() {
                             }
 
                             <li>
-                                <div onClick={()=>{dispatchHideCol(col.id)}} className={style.buttonSelect}>Hide</div>
+                                <div onClick={(e)=>{displayContextMenu(e, col.accessor); deleteContext(col.accessor); dispatchHideCol(col.id)}} className={style.buttonSelect}>Hide</div>
                             </li>
                             <li>
-                                <div onClick={() => { deleteCol(col) }} className={style.buttonSelect}>Delete</div>
+                                <div onClick={(e) => {displayContextMenu(e, col.accessor); deleteCol(col.id) }} className={style.buttonSelect}>Delete</div>
                             </li>
                         </ul>
                     }

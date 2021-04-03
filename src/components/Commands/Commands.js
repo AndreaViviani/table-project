@@ -3,23 +3,26 @@ import ShowHide from "../ShowHide/ShowHide";
 import style from "./Commands.module.css";
 import { useSelector } from "react-redux";
 import React from "react";
+import SaveTable from "../SaveTable/SaveTable";
 
 function Commands (props) {
 
+    //props passate dalla view viewdata, che passo a loro volta alla tabella
     const { isTableLoading, onTableLoadingChange } = props;
 
 
-    // recupero anche le colonne selezionate:
+    // recupero anche le colonne selezionate x decidere se mostrare il comando merge
     const selectedCol = useSelector(state => state.selectedCol);
+    const loadedName = useSelector(state => state.loadedName)
 
 
 
 
     return(
         <div className={style.toVisualDiv}>
-                <h3 className={style.commandsLabel}>
-                    Commands:
-                </h3>
+                <h2 className={style.commandsLabel}>
+                    {loadedName}
+                </h2>
                 <div>
                     {selectedCol.length > 0 &&
 
@@ -31,6 +34,9 @@ function Commands (props) {
                     <ShowHide className={style.commandsButton}>
 
                     </ShowHide>
+                    <SaveTable>
+                        
+                    </SaveTable>
                 </div>
             </div>
     )

@@ -74,3 +74,10 @@ export const delSel = () => {
         type: "DELETESEL",
     }
 }
+
+export const loadName = (nameToSave) => {
+    return {
+        type: "LOADNAME",
+        nameToSave,
+    }
+}

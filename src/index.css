@@ -476,3 +476,25 @@ input[type="checkbox"]:checked + span {
   margin-bottom:0.2rem;
   margin-right:0.05rem;
 }
+
+/*pop up styles*/
+
+.overlay{
+  position:absolute;
+  top:0;
+  left:0;
+  height: 100%;
+  width:100vw;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.panel{
+  background-color: white;
+  border-radius:2px;
+  padding:1rem 2rem 2rem 2rem;
+  z-index:200;
+  display: inline-block;
+  width:600px;
+}

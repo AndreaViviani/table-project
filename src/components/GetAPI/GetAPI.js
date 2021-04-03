@@ -3,7 +3,7 @@ import style from "./GetAPI.module.css";
 import { csvJSON, ssvJSON } from "../../logicModules/formatConverter/converter";
 import { useDispatch } from "react-redux";
 /*importo l'action per caricare i dati nel redux storage */
-import { loadTable, loadKeys, delSel } from "../../reduxStateManager/actions";
+import { loadTable, loadKeys, delSel, loadName } from "../../reduxStateManager/actions";
 import axios from "axios";
 import Loader from "react-loader-spinner";
 import { Link } from "react-router-dom";
@@ -22,6 +22,9 @@ function GetAPI() {
     }
     const dispatchDeleteSel = () => {
         dispatch(delSel());
+    }
+    const dispatchLoadName = (nameToSave) => {
+        dispatch(loadName(nameToSave))
     }
 
     /*Some states for the form (API myserver)*/
@@ -43,6 +46,10 @@ function GetAPI() {
     const [serverToLoad, setServerToLoad] = React.useState('table');
 
     const [isLoaded, setIsLoaded] = React.useState("Not loaded");
+
+    //name of the esternal table i whant to retrieve
+
+    const [extName, setExtName] = React.useState("")
 
     const regions = [{ name: "Valle d'Aosta", value: "Valle-d'Aosta" }, { name: "Piemonte", value: "Piemonte" }, { name: "Liguria", value: "Liguria" },
     { name: "Lombardia", value: "Lombardia" }, { name: "Trentino-Alto Adige", value: "Trentino-Alto-Adige" }, { name: "Veneto", value: "Veneto" }, { name: "Friuli-Venezia Giulia", value: "Friuli-Venezia-Giulia" },
@@ -82,6 +89,8 @@ function GetAPI() {
             case "others":
                 getExternalData();
                 break;
+            default:
+                getTableData();
         }
     }
 
@@ -98,6 +107,7 @@ function GetAPI() {
         return items;
     }
 
+    // a seconda dei dati che voglio caricare faccio una richiesta diversa al server
     function getTableData() {
         switch (dataSet) {
             case "meteo":
@@ -108,6 +118,7 @@ function GetAPI() {
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
                         dispatchDeleteSel();
+                        dispatchLoadName(`meteo-${region}-${day}/${month}/${year}`)
                         setIsLoaded("Loaded");
                     })
                     .catch((err) => {
@@ -123,6 +134,7 @@ function GetAPI() {
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
                         dispatchDeleteSel();
+                        dispatchLoadName(`Covid-${region}-${day}/${month}/${year}`)
                         setIsLoaded("Loaded");
                     })
                     .catch((err) => {
@@ -138,6 +150,7 @@ function GetAPI() {
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
                         dispatchDeleteSel();
+                        dispatchLoadName(`${savedName}`)
                         setIsLoaded("Loaded");
                     })
                     .catch((err) => {
@@ -148,6 +161,7 @@ function GetAPI() {
         }
     }
 
+    // chiedo i dati ad API esterna e converto a seconda del formato
     function getExternalData() {
         setIsLoaded("loading");
         axios.get(externalUrl)
@@ -157,18 +171,21 @@ function GetAPI() {
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
                         dispatchDeleteSel();
+                        dispatchLoadName(extName);
                         setIsLoaded("Loaded");
                         break;
                     case "CSV":
                         dispatchLoad(csvJSON(res.data.data));
                         dispatchKeys(createKeys(csvJSON(res.data.data)));
                         dispatchDeleteSel();
+                        dispatchLoadName(extName);
                         setIsLoaded("Loaded");
                         break;
                     case "SSV":
                         dispatchLoad(ssvJSON(res.data.data));
                         dispatchKeys(createKeys(ssvJSON(res.data.data)));
                         dispatchDeleteSel();
+                        dispatchLoadName(extName);
                         setIsLoaded("Loaded");
                         break;
                 }
@@ -309,6 +326,10 @@ function GetAPI() {
                             <label>Inserisci l'url: </label>
                             <input type="text" placeholder="URL..." onChange={e => setExternalUrl(e.target.value)} />
                             <br />
+                            <label>
+                                Inserisci il nome che vuoi dare alla tua tabella: 
+                            </label>
+                            <input type="text" placeholder="name.." onChange={e => setExtName(e.target.value)} />
                         </form>
                     </div>
                 }

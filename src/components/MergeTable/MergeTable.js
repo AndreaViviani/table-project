@@ -35,7 +35,10 @@ function MergeTable(props) {
         setDataset(e.target.value);
     }
 
+    // funzione chimata quando voglio unire l'attuale tabella con i dati meteo
     function getMeteo() {
+        //dico intanto che la tabella sta caricando
+        //poi ciclo sulle righe e per ognuna faccio una chiamata al server
         onTableLoadingChange(true);
         for (let i = 0; i < loadedTable.length; i++) {
             let myNewObj = {};
@@ -59,7 +62,7 @@ function MergeTable(props) {
                         myNewData.push(myNewObj);
                         console.log(i);
                         if (i === (loadedTable.length - 1)) {
-                            console.log(myNewData);
+                            // se ho recuperato l'ultima riga carico i dati nello stato
                             dispatchKeys(Object.keys(myNewData[0]).map((key) => {
                                 return {
                                     Header: <p>{key}</p>,

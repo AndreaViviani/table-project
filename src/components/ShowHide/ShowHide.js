@@ -60,11 +60,11 @@ function ShowHide() {
 
             <button onClick={(e) => { setShowPanel(!showPanel) }}>Show/Hide Columns</button>
             { showPanel &&
-                <div className={style.overlay} onClick={(e) => { setShowPanel(false) }}>
-                    <div className={style.showPanel} onClick={(e) => { e.stopPropagation() }}>
+                <div className={"overlay"} onClick={(e) => { setShowPanel(false) }}>
+                    <div className={"panel"} onClick={(e) => { e.stopPropagation() }}>
                         <h3>
                             Hide/Show columns:
-                            </h3>
+                        </h3>
                         {checkBoxes}
                     </div>
                 </div>
