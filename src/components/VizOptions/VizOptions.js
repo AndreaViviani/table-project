@@ -61,8 +61,6 @@ function VizOptions() {
         }, [myKeys]
     )
 
-
-
     // quando cambio le colonne selezionanate, cambio anche l'header da visualizzare
     React.useEffect(() => {
         setMyKeys(setKeys);
@@ -92,7 +90,6 @@ function VizOptions() {
     // gestisco il click destro sull'header della colonna: nascondo o mostro il context menu
     function displayContextMenu(e, col) {
         e.preventDefault();
-        console.log(clickRef.current);
         let bounds = clickRef.current.getBoundingClientRect();
         let xPos = e.clientX - bounds.left;
         let yPos = e.clientY - bounds.top;
@@ -103,13 +100,13 @@ function VizOptions() {
                     newContextShow.splice(i, 1);
                 }
             }
-            console.log(contextShow);
+
             setContextShow(newContextShow);
         } else {
             const newContextShow = [...contextShow];
             const contextToPush = { name: col, xPos: xPos, yPos: yPos };
             newContextShow.push(contextToPush);
-            console.log(contextShow);
+
             setContextShow(newContextShow);
             setKeys();
         }

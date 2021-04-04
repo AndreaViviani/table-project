@@ -57,32 +57,50 @@ function MergeTable(props) {
             axios.get(url)
                 .then(
                     (res) => {
-                        console.log(res.data);
                         myNewObj = { ...myNewObj, ...res.data };
                         myNewData.push(myNewObj);
-                        console.log(i);
                         if (i === (loadedTable.length - 1)) {
                             // se ho recuperato l'ultima riga carico i dati nello stato
-                            dispatchKeys(Object.keys(myNewData[0]).map((key) => {
-                                console.log(selectedCol.includes(key));
-                                return {
-                                    Header: <p>{key}</p>,
-                                    accessor: parseInt(key, 10) || key,
-                                    key: key,
-                                    show: true,
-                                    id: key,
-                                    added: selectedCol.includes(key) ? false : true,
+                            //per estrarre le keys devo accertarmi che la riga sia completa
+                            console.log('ciao');
+                            for (let x = 0; x < myNewData.length; x++) {
+                                console.log(Object.keys(myNewData[x]).length);
+                                if ((Object.keys(myNewData[x]).length) > selectedCol.length) {
+                                    //estraggo le keys
+                                    console.log(Object.keys(myNewData[x]));
+                                    dispatchKeys(Object.keys(myNewData[x]).map((key) => {
+                                        return {
+                                            Header: <p>{key}</p>,
+                                            accessor: parseInt(key, 10) || key,
+                                            key: key,
+                                            show: true,
+                                            id: key,
+                                            added: selectedCol.includes(key) ? false : true,
+                                        }
+                                    }));
+                                    // faccio un controllo e riempio le righe vuote con un azione
+                                    for (const row of myNewData) {
+                                        for (const cell of Object.keys(myNewData[x])){
+                                            if (row[cell]) {
+                                                continue;
+                                            }
+                                            row[cell]=<button onClick={(e)=>{addData(row);}}>Add data</button>;
+                                        }
+                                    }
+
+                                    dispatchLoad(myNewData);
+                                    onTableLoadingChange(false);
+                                    break;
                                 }
-                            }));
-                            dispatchLoad(myNewData);
-                            onTableLoadingChange(false);
+                            }
+
+
                         }
                     }
                 )
                 .catch((err) => {
                     console.log(err);
                 })
-            console.log(i);
         }
     }
 
@@ -92,10 +110,12 @@ function MergeTable(props) {
         }
     }, [dataReady])
 
-
+    //i'll use this function to add data to empty row
+    function addData() {
+        
+    }
 
     function selectDataset() {
-        console.log(dataset);
         switch (dataset) {
             case "meteo":
                 getMeteo();
