@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { loadTable, loadKeys } from "../../reduxStateManager/actions";
+import FillRow from "../FillRow/FillRow";
 
 
 function MergeTable(props) {
@@ -35,25 +36,7 @@ function MergeTable(props) {
         setDataset(e.target.value);
     }
 
-    //i'll use this function to add data to empty row
-    function addData(row) {
-        console.log('ciao');
-        const data = row.data;
-        const splittedData = data.split('-');
-        let regione = row.denominazione_regione;
-        let provincia = row.denominazione_provincia;
-        let year = splittedData[0];
-        let month = splittedData[1];
-        let day = splittedData[2].split('T')[0];
-        const url = `http://localhost:3001/get-options/meteo/${provincia}/${year}/${month}/${day}/10`;
-        axios.get(url)
-            .then((res)=>{
-                console.log(res.data);
-            })
-            .catch((err)=>{
-                console.log(err);
-            })
-    }
+    
 
     // funzione chimata quando voglio unire l'attuale tabella con i dati meteo
     function getMeteo() {
@@ -64,12 +47,11 @@ function MergeTable(props) {
             let myNewObj = {};
             const data = loadedTable[i].data;
             const splittedData = data.split('-');
-            let regione = loadedTable[i].denominazione_regione;
             let provincia = loadedTable[i].denominazione_provincia;
             let year = splittedData[0];
             let month = splittedData[1];
             let day = splittedData[2].split('T')[0];
-            const url = `http://localhost:3001/meteo/${regione}/${provincia}/${year}/${month}/${day}`;
+            const url = `http://localhost:3001/meteo/single-line/${provincia}/${year}/${month}/${day}`;
             // riempio intanto l'oggetto con i dati delle colonne già presenti selezionate
             for (const col of selectedCol) {
                 myNewObj[col] = loadedTable[i][col];
@@ -87,7 +69,6 @@ function MergeTable(props) {
                                 console.log(Object.keys(myNewData[x]).length);
                                 if ((Object.keys(myNewData[x]).length) > selectedCol.length) {
                                     //estraggo le keys
-                                    console.log(Object.keys(myNewData[x]));
                                     dispatchKeys(Object.keys(myNewData[x]).map((key) => {
                                         return {
                                             Header: <p>{key}</p>,
@@ -104,7 +85,7 @@ function MergeTable(props) {
                                             if (row[cell]) {
                                                 continue;
                                             }
-                                            row[cell] = <button onClick={(e) => {e.stopPropagation(); addData(row); console.log('add data') }}>Add data</button>;
+                                            row[cell] = <FillRow row = {row} isTableLoading={isTableLoading} onTableLoadingChange={(isTableLoading) => { onTableLoadingChange(isTableLoading) }}></FillRow> ;
                                         }
                                     }
 

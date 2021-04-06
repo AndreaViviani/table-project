@@ -1,4 +1,5 @@
 export const loadTable = (dataToLoad) =>{
+    console.log("im loading");
     return {
         type: "LOAD",
         dataToLoad,
