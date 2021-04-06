@@ -1,7 +1,8 @@
 import { useSelector } from "react-redux";
 import style from "./MyTable.module.css";
 import React from "react";
-import { useTable, usePagination, useSortBy } from "react-table"
+import { useTable, usePagination, useSortBy } from "react-table";
+import axios from "axios";
 
 function MyTable() {
 
@@ -74,7 +75,6 @@ function MyTable() {
         return () => clearTimeout(timer);
     }, []);
 
-
     // Render the UI for your table
     return (
 
@@ -89,7 +89,7 @@ function MyTable() {
                                 <tr {...headerGroup.getHeaderGroupProps()}>
                                     {headerGroup.headers.map(column => {
                                         return (
-                                            <th className={column.added && "addedCol"} {...column.getHeaderProps(column.getSortByToggleProps())}>{column.render('Header')}</th>
+                                            <th className={column.added ? "addedCol" : undefined} {...column.getHeaderProps(column.getSortByToggleProps())}>{column.render('Header')}</th>
                                         )
                                     })}
                                 </tr>

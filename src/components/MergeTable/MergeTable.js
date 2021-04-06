@@ -35,6 +35,26 @@ function MergeTable(props) {
         setDataset(e.target.value);
     }
 
+    //i'll use this function to add data to empty row
+    function addData(row) {
+        console.log('ciao');
+        const data = row.data;
+        const splittedData = data.split('-');
+        let regione = row.denominazione_regione;
+        let provincia = row.denominazione_provincia;
+        let year = splittedData[0];
+        let month = splittedData[1];
+        let day = splittedData[2].split('T')[0];
+        const url = `http://localhost:3001/get-options/meteo/${provincia}/${year}/${month}/${day}/10`;
+        axios.get(url)
+            .then((res)=>{
+                console.log(res.data);
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
+    }
+
     // funzione chimata quando voglio unire l'attuale tabella con i dati meteo
     function getMeteo() {
         //dico intanto che la tabella sta caricando
@@ -80,11 +100,11 @@ function MergeTable(props) {
                                     }));
                                     // faccio un controllo e riempio le righe vuote con un azione
                                     for (const row of myNewData) {
-                                        for (const cell of Object.keys(myNewData[x])){
+                                        for (const cell of Object.keys(myNewData[x])) {
                                             if (row[cell]) {
                                                 continue;
                                             }
-                                            row[cell]=<button onClick={(e)=>{addData(row);}}>Add data</button>;
+                                            row[cell] = <button onClick={(e) => {e.stopPropagation(); addData(row); console.log('add data') }}>Add data</button>;
                                         }
                                     }
 
@@ -110,10 +130,7 @@ function MergeTable(props) {
         }
     }, [dataReady])
 
-    //i'll use this function to add data to empty row
-    function addData() {
-        
-    }
+    
 
     function selectDataset() {
         switch (dataset) {
