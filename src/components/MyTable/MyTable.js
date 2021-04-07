@@ -14,7 +14,6 @@ function MyTable() {
 
 
     React.useEffect(() => {
-        console.log(allData);
         setData(allData);
     }, [allData])
 

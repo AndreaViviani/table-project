@@ -82,3 +82,18 @@ export const loadName = (nameToSave) => {
         nameToSave,
     }
 }
+
+export const updateRow = (indexToUpdate, rowToUpdate) => {
+    return {
+        type: "UPDATEROW",
+        indexToUpdate, 
+        rowToUpdate,
+    }
+}
+
+export const setHasBeenExtended = (value) =>{
+    return {
+        type:"EXTEND",
+        value,
+    }
+}

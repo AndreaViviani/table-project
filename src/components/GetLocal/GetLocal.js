@@ -1,7 +1,7 @@
 import React from "react";
 import style from "./GelLocal.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { loadTable, loadKeys, delSel, loadName } from "../../reduxStateManager/actions";
+import { loadTable, loadKeys, delSel, loadName, setHasBeenExtended } from "../../reduxStateManager/actions";
 import { csvJSON, ssvJSON, jsonJSON} from "./../../logicModules/formatConverter/converter";
 import Loader from "react-loader-spinner";
 import { Link } from "react-router-dom";
@@ -36,6 +36,9 @@ function GetLocal() {
     }
     const dispatchLoadName = (nameToSave) => {
         dispatch(loadName(nameToSave));
+    }
+    const dispatchExtended = (value) => {
+        dispatch(setHasBeenExtended(value));
     }
 
     const createKeys = (table) => {
@@ -83,6 +86,7 @@ function GetLocal() {
             setLoadingState("Loaded");
             dispatchKeys(createKeys(convertedFile));
             dispatchLoadName(fileName);
+            dispatchExtended(false);
             dispatchDeleteSel();
         }
         reader.readAsText(file);

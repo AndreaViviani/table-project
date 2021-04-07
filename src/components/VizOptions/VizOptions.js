@@ -44,6 +44,9 @@ function VizOptions() {
     // recupero anche le colonne selezionate:
     const selectedCol = useSelector(state => state.selectedCol);
 
+    //recupero lo stato per capire quando estendo la tabella
+    const hasExtended = useSelector(state => state.hasExtended)
+
     //setto uno stato locale per l'header da visualizzare
     const [myKeys, setMyKeys] = React.useState(loadedKeys);
 
@@ -64,7 +67,7 @@ function VizOptions() {
     // quando cambio le colonne selezionanate, cambio anche l'header da visualizzare
     React.useEffect(() => {
         setMyKeys(setKeys);
-    }, [selectedCol, loadedTable, contextShow])
+    }, [selectedCol, contextShow, hasExtended])
 
 
     function deleteCol(col) {
@@ -198,7 +201,7 @@ function VizOptions() {
                 show: col.show,
                 selected: checkIfColumnIsSelected(col.id),
                 id: col.id,
-                added: col.added || false,
+                added: !hasExtended ? false : col.added,
             }
         })
     }

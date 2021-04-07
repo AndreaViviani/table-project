@@ -48,6 +48,7 @@ function ShowHide() {
     //blocco scroll se l'overlay è aperto
     React.useEffect(() => {
         if (showPanel) {
+            window.scrollTo(0,0);
             document.body.style.overflow = "hidden";
         } else {
             document.body.style.overflow = "scroll";

@@ -3,7 +3,7 @@ import style from "./GetAPI.module.css";
 import { csvJSON, ssvJSON } from "../../logicModules/formatConverter/converter";
 import { useDispatch } from "react-redux";
 /*importo l'action per caricare i dati nel redux storage */
-import { loadTable, loadKeys, delSel, loadName } from "../../reduxStateManager/actions";
+import { loadTable, loadKeys, delSel, loadName, setHasBeenExtended } from "../../reduxStateManager/actions";
 import axios from "axios";
 import Loader from "react-loader-spinner";
 import { Link } from "react-router-dom";
@@ -26,6 +26,10 @@ function GetAPI() {
     const dispatchLoadName = (nameToSave) => {
         dispatch(loadName(nameToSave))
     }
+
+    const dispatchExtended = (value) => {
+        dispatch(setHasBeenExtended(value));
+    } 
 
     /*Some states for the form (API myserver)*/
     const [region, setRegion] = React.useState("Valle-d'Aosta");
@@ -118,7 +122,8 @@ function GetAPI() {
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
                         dispatchDeleteSel();
-                        dispatchLoadName(`meteo_${region}_${day}-${month}-${year}`)
+                        dispatchLoadName(`meteo_${region}_${day}-${month}-${year}`);
+                        dispatchExtended(false);
                         setIsLoaded("Loaded");
                     })
                     .catch((err) => {
@@ -134,7 +139,8 @@ function GetAPI() {
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
                         dispatchDeleteSel();
-                        dispatchLoadName(`Covid_${region}_${day}-${month}-${year}`)
+                        dispatchLoadName(`Covid_${region}_${day}-${month}-${year}`);
+                        dispatchExtended(false);
                         setIsLoaded("Loaded");
                     })
                     .catch((err) => {
@@ -150,7 +156,8 @@ function GetAPI() {
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
                         dispatchDeleteSel();
-                        dispatchLoadName(`${savedName}`)
+                        dispatchLoadName(`${savedName}`);
+                        dispatchExtended(false);
                         setIsLoaded("Loaded");
                     })
                     .catch((err) => {
@@ -172,6 +179,7 @@ function GetAPI() {
                         dispatchKeys(createKeys(res.data.data));
                         dispatchDeleteSel();
                         dispatchLoadName(extName);
+                        dispatchExtended(false);
                         setIsLoaded("Loaded");
                         break;
                     case "CSV":
@@ -179,6 +187,7 @@ function GetAPI() {
                         dispatchKeys(createKeys(csvJSON(res.data.data)));
                         dispatchDeleteSel();
                         dispatchLoadName(extName);
+                        dispatchExtended(false);
                         setIsLoaded("Loaded");
                         break;
                     case "SSV":
@@ -186,6 +195,7 @@ function GetAPI() {
                         dispatchKeys(createKeys(ssvJSON(res.data.data)));
                         dispatchDeleteSel();
                         dispatchLoadName(extName);
+                        dispatchExtended(false);
                         setIsLoaded("Loaded");
                         break;
                 }

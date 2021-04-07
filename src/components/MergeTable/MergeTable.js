@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
-import { loadTable, loadKeys } from "../../reduxStateManager/actions";
+import { loadTable, loadKeys, updateRow, setHasBeenExtended } from "../../reduxStateManager/actions";
 import FillRow from "../FillRow/FillRow";
 
 
@@ -11,6 +11,8 @@ function MergeTable(props) {
 
     const loadedTable = useSelector(state => state.loadedTable);
     const selectedCol = useSelector(state => state.selectedCol);
+    const loadedKeys = useSelector(state => state.loadedKeys);
+    const hasExtended = useSelector(state => state.hasExtended);
 
     //stato select 
     const [wantToExtend, setWantToExtend] = React.useState(false);
@@ -36,7 +38,53 @@ function MergeTable(props) {
         setDataset(e.target.value);
     }
 
-    
+    const dispatchUpdate = (index, row) => {
+        dispatch(updateRow(index, row))
+    };
+
+    const dispatchExtended = (value) => {
+        dispatch(setHasBeenExtended(value));
+    }
+
+    // this useffect add button to fill rows with data 
+    React.useEffect(() => {
+        if (hasExtended) {
+            const cells = []
+            for (const col of loadedKeys) {
+                cells.push(col.accessor);
+            }
+            for (let i = 0; i < loadedTable.length; i++) {
+                let newRow = {};
+                Object.assign(newRow, loadedTable[i]);
+                for (const cell of cells) {
+                    if (!loadedTable[i][cell]) {
+                        newRow[cell] = <FillRow row={newRow} isTableLoading={isTableLoading} onTableLoadingChange={(isTableLoading) => { onTableLoadingChange(isTableLoading) }}></FillRow>;
+                    }
+                }
+                dispatchUpdate(i, newRow);
+            }
+        } else {
+            //when click to uniform to set unextended i want to uniform header column
+            console.log("ciao");
+            dispatchKeys((loadedKeys).map((key) => {
+                return {
+                    Header: key.Header,
+                    accessor: key.accessor,
+                    key: key.key,
+                    show: key.show,
+                    id: key.id,
+                    added: false,
+                }
+            }));
+        }
+
+    }, [hasExtended])
+
+
+
+
+
+
 
     // funzione chimata quando voglio unire l'attuale tabella con i dati meteo
     function getMeteo() {
@@ -59,14 +107,14 @@ function MergeTable(props) {
             axios.get(url)
                 .then(
                     (res) => {
+
                         myNewObj = { ...myNewObj, ...res.data };
+                        dispatchUpdate(i, myNewObj);
                         myNewData.push(myNewObj);
                         if (i === (loadedTable.length - 1)) {
                             // se ho recuperato l'ultima riga carico i dati nello stato
                             //per estrarre le keys devo accertarmi che la riga sia completa
-                            console.log('ciao');
                             for (let x = 0; x < myNewData.length; x++) {
-                                console.log(Object.keys(myNewData[x]).length);
                                 if ((Object.keys(myNewData[x]).length) > selectedCol.length) {
                                     //estraggo le keys
                                     dispatchKeys(Object.keys(myNewData[x]).map((key) => {
@@ -79,21 +127,12 @@ function MergeTable(props) {
                                             added: selectedCol.includes(key) ? false : true,
                                         }
                                     }));
-                                    // faccio un controllo e riempio le righe vuote con un azione
-                                    for (const row of myNewData) {
-                                        for (const cell of Object.keys(myNewData[x])) {
-                                            if (row[cell]) {
-                                                continue;
-                                            }
-                                            row[cell] = <FillRow row = {row} isTableLoading={isTableLoading} onTableLoadingChange={(isTableLoading) => { onTableLoadingChange(isTableLoading) }}></FillRow> ;
-                                        }
-                                    }
-
-                                    dispatchLoad(myNewData);
+                                    dispatchExtended(true);
                                     onTableLoadingChange(false);
                                     break;
                                 }
                             }
+
 
 
                         }
@@ -111,7 +150,7 @@ function MergeTable(props) {
         }
     }, [dataReady])
 
-    
+
 
     function selectDataset() {
         switch (dataset) {
@@ -124,7 +163,7 @@ function MergeTable(props) {
     }
 
     return (
-        <>
+        <>{!hasExtended &&
             <div style={{ display: "inline-block" }}>
                 <button onClick={() => {
                     setWantToExtend(true);
@@ -158,6 +197,11 @@ function MergeTable(props) {
                 }
 
             </div>
+        }{
+                hasExtended &&
+                <button onClick={(e) => { dispatchExtended(false); setWantToExtend(false) }}>Uniform table</button>
+            }
+
         </>
     )
 }

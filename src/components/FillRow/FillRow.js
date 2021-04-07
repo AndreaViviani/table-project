@@ -3,15 +3,16 @@ import axios from "axios";
 import Loader from "react-loader-spinner";
 import style from "./FillRow.module.css";
 import { useSelector, useDispatch } from "react-redux";
-import { loadTable } from "../../reduxStateManager/actions";
+import { updateRow } from "../../reduxStateManager/actions";
 
 function FillRow(props) {
 
-    const { row, isTableLoading, onTableLoadingChange} = props;
+    const { row, isTableLoading, onTableLoadingChange } = props;
 
     const [panelIsOpen, setPanelIsOpen] = React.useState(false);
     const [panelIsLoading, setPanelIsLoading] = React.useState(false);
     const [cities, setCities] = React.useState([]);
+    const [areNoCities, setAreNoCities] = React.useState(false);
 
     const [formattedCities, setFormattedCities] = React.useState([]);
 
@@ -19,9 +20,8 @@ function FillRow(props) {
 
     const dispatch = useDispatch();
 
-    const dispatchLoad = (data) => {
-        console.log('loado1')
-        dispatch(loadTable(data))
+    const dispatchUpdate = (index, row) => {
+        dispatch(updateRow(index, row))
     };
 
     // sort cities in base alla distanza
@@ -47,13 +47,17 @@ function FillRow(props) {
         axios.get(`http://localhost:3001/meteo/single-line/${city}/${year}/${month}/${day}`)
             .then((res) => {
                 //now i update my table data
+                if (res.data.error) {
+                    alert(res.data.error);
+                }
                 const newLoadedTable = loadedTable;
                 for (let i = 0; i < newLoadedTable.length; i++) {
                     if (newLoadedTable[i].denominazione_provincia === provincia) {
-                        const myNewObj = { ...newLoadedTable[i], ...res.data };
+                        dispatchUpdate(i, res.data);
+                        /*const myNewObj = { ...newLoadedTable[i], ...res.data };
                         newLoadedTable[i] = myNewObj;
                         console.log(newLoadedTable);
-                        dispatchLoad(newLoadedTable);
+                        dispatchLoad(newLoadedTable);*/
                         setPanelIsOpen(false);
                         onTableLoadingChange(false);
                         break;
@@ -80,6 +84,15 @@ function FillRow(props) {
         setFormattedCities(newFormattedCities);
     }, [cities])
 
+    React.useEffect(() => {
+        if (panelIsOpen) {
+            document.body.style.overflow = "hidden";
+            window.scrollTo(0,0);
+        } else {
+            document.body.style.overflow = "scroll";
+        }
+    }, [panelIsOpen])
+
     //i'll use this function to add data to empty row
     function addData(row) {
         console.log('ciao');
@@ -93,8 +106,18 @@ function FillRow(props) {
         const url = `http://localhost:3001/get-options/meteo/${provincia}/${year}/${month}/${day}/10`;
         axios.get(url)
             .then((res) => {
-                setCities(res.data);
-                setPanelIsLoading(false);
+                if (res.data.error === "no cities found") {
+                    setPanelIsLoading(false);
+                    setAreNoCities(true);
+
+                } else if (res.data.error && res.data.error !== "no cities found") {
+                    alert("Si è verificato un errore, ritenta più tardi");
+                    setPanelIsOpen(false);
+                } else {
+                    setCities(res.data);
+                    setPanelIsLoading(false);
+                }
+
             })
             .catch((err) => {
                 console.log(err);
@@ -104,9 +127,9 @@ function FillRow(props) {
     return (
         <>
             { panelIsOpen &&
-                <div className={"overlay"} onClick={(e) => { setPanelIsOpen(false) }}>
+                <div className={"overlay"} onClick={(e) => { setPanelIsOpen(false); setAreNoCities(false); }}>
                     <div className={"panel"} onClick={(e) => { e.stopPropagation() }}>
-                        {!panelIsLoading &&
+                        {!panelIsLoading && !areNoCities &&
                             <>
                                 <h3>
                                     Choose city:
@@ -124,6 +147,11 @@ function FillRow(props) {
                                 />
                             </>
 
+                        }{
+                            !panelIsLoading && areNoCities &&
+                            <>
+                            Non sono presenti città con il nome {row.denominazione_provincia}
+                            </>
                         }
 
                     </div>
