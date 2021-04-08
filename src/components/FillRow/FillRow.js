@@ -15,7 +15,10 @@ function FillRow(props) {
     const [areNoCities, setAreNoCities] = React.useState(false);
     const [formattedCities, setFormattedCities] = React.useState([]);
     const [manualCity, setManualCity] = React.useState("");
+
+
     const loadedTable = useSelector(state => state.loadedTable);
+    const loadedKeys = useSelector(state => state.loadedKeys);
 
     const dispatch = useDispatch();
 
@@ -56,12 +59,11 @@ function FillRow(props) {
                 const newLoadedTable = loadedTable;
                 for (let i = 0; i < newLoadedTable.length; i++) {
                     if (newLoadedTable[i].denominazione_provincia === provincia) {
-                        /*const myNewObj = { ...newLoadedTable[i], ...res.data };
-                        newLoadedTable[i] = myNewObj;
-                        console.log(newLoadedTable);
-                        dispatchLoad(newLoadedTable);*/
+                        
+                        let myNewObj = {};
+                        myNewObj = { ...loadedTable[i], ...res.data };
                         setPanelIsOpen(false);
-                        dispatchUpdate(i, res.data);
+                        dispatchUpdate(i, myNewObj);
                         break;
                     }
                 }

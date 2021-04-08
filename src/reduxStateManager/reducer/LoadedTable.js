@@ -17,7 +17,7 @@ const loadedTableReducer = (state = null, action)=>{
             return state = myNewState;
         case "UPDATEROW":
             const nextHiddenState = produce(previousState, draftState => {
-                draftState[indexToUpdate] = {... previousState[indexToUpdate], ...rowToUpdate};
+                draftState[indexToUpdate] = rowToUpdate;
             })
             return state = nextHiddenState;
         default:

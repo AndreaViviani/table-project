@@ -13,7 +13,8 @@ function Commands (props) {
 
     // recupero anche le colonne selezionate x decidere se mostrare il comando merge
     const selectedCol = useSelector(state => state.selectedCol);
-    const loadedName = useSelector(state => state.loadedName)
+    const loadedName = useSelector(state => state.loadedName);
+    const loadedTable = useSelector(state => state.loadedTable);
 
 
 
@@ -37,6 +38,9 @@ function Commands (props) {
                     <SaveTable>
                         
                     </SaveTable>
+                    <div onClick={(e)=>{console.log(loadedTable)}}>
+                        Console table
+                    </div>
                 </div>
             </div>
     )
