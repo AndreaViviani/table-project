@@ -489,6 +489,7 @@ input[type="checkbox"]:checked + span {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index:3;
 }
 .panel{
   background-color: white;
@@ -497,6 +498,7 @@ input[type="checkbox"]:checked + span {
   z-index:200;
   display: inline-block;
   width:600px;
+  z-index:5;
 }
 
 .addedCol{

@@ -158,7 +158,7 @@ function FillRow(props) {
                 </div>
             }
 
-            <button onClick={(e) => { e.stopPropagation(); setPanelIsLoading(true); setPanelIsOpen(true); addData(row); }}>Add data</button>
+            <div className={style.add} onClick={(e) => { e.stopPropagation(); setPanelIsLoading(true); setPanelIsOpen(true); addData(row); }}></div>
         </>
     )
 }

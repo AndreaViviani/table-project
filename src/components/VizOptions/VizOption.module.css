@@ -1,84 +1,151 @@
-.inputCheck{
-    display: inline-block;
-    padding:0px 10px 10px 5px;
+.inputCheck {
+  display: inline-block;
+  padding: 0px 10px 10px 5px;
 }
 
-.inputCheck input{
-    margin-left:5px;
+.inputCheck input {
+  margin-left: 5px;
+}
+
+.headerCell {
+  padding: 1rem 1rem;
+}
+
+.headerCell p {
+  margin: 0;
 }
 
 .rowsOption p {
-    display: inline-block;
-    padding-right:10px;
+  display: inline-block;
+  padding-right: 10px;
 }
 
-.toVisualDiv{
-    margin:20px 10px;
-    background-color: #ffffff;
-    border:2px solid #042650;
-    border-radius: 2px;
-    padding:10px;
-    display: flex;
-    align-items: flex-start ;
+.toVisualDiv {
+  margin: 20px 10px;
+  background-color: #ffffff;
+  border: 2px solid #042650;
+  border-radius: 2px;
+  padding: 10px;
+  display: flex;
+  align-items: flex-start;
 }
 
-.buttonSelect{
-    z-index: 10000;
-}
-
-button{
-    font-size: 16px;
-    background-color: #388a7f;
-    font-weight: bold;
-    color:#fff;
-    display: inline-block;
-    border-radius:2px;
-    border:none;
-    margin:0 10px;
-    padding:5px 15px;
-    margin-bottom:10px;
-    cursor: pointer;
-    z-index: 1000;
+button {
+  font-size: 16px;
+  background-color: #388a7f;
+  font-weight: bold;
+  color: #fff;
+  display: inline-block;
+  border-radius: 2px;
+  border: none;
+  margin: 0 10px;
+  padding: 5px 15px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  z-index: 1000;
 }
 /*context menu styles*/
-.contextMenu{
-    background-color: #ffffff;
-    border: 1px #042650 solid;
-    z-index: 10;
-    margin-top: 1.3rem;
-    text-align: center;
-    width:100%;
-    padding:0;
-    border-radius:2px;
+.contextMenu {
+  background-color: #ffffff;
+  border: 1px #042650 solid;
+  z-index: 10;
+  margin-top: 1.3rem;
+  text-align: center;
+  width: 100%;
+  padding: 0;
+  border-radius: 2px;
 }
 
 .contextMenu li {
-    padding:0.3rem;
+  padding: 0.1rem 0.3rem 0.3rem 0.3rem;
+  z-index: 2;
 }
 
 .contextMenu li:hover {
-    background-color: rgba(56, 138, 127, 0.5);
+  background-color: rgba(56, 138, 127, 0.5);
 }
 
 .selectedDiv {
-    width:100%;
-    height:2rem;
+  width: 100%;
+  height: 2rem;
 }
 
-.hideContext{
-    position:absolute;
-    width:100vw;
-    height:100%;
+.hideContext {
+  position: absolute;
+  width: 100vw;
+  height: 100%;
 }
 
-.selectedDiv{
-    color:#388a7f;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom:0.3rem;
+.selectedDiv {
+  background-image: url("../../assets/icons/th/selected-green.png");
+  background-position: center;
+  background-size: 2rem 2rem;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.3rem;
 }
 
-.addedCol{
-    background-color: yellow;
+.unSelectedDiv {
+  margin-bottom: 0.3rem;
+}
+
+.addedCol {
+  background-color: yellow;
+}
+
+.actionLabel {
+  display: inline-block;
+  color: #388a7f;
+}
+
+.contextMenu li:hover > .actionLabel {
+  color: white;
+}
+
+.actionIcon {
+  display: inline-block;
+}
+
+.select {
+  background-image: url("../../assets/icons/context-menu/select-green.png");
+  background-size: 1em 1em;
+  height: 1em;
+  width: 1em;
+  margin: 0.2rem 0.2rem;
+  position: relative;
+  top: 0.4rem;
+}
+
+.hide {
+  background-image: url("../../assets/icons/context-menu/hide-green.png");
+  background-size: 1em 1em;
+  height: 1em;
+  width: 1em;
+  margin: 0.2rem 0.2rem;
+  position: relative;
+  top: 0.4rem;
+}
+
+.delete {
+  background-image: url("../../assets/icons/context-menu/delete-green.png");
+  background-size: 1em 1em;
+  height: 1em;
+  width: 1em;
+  margin: 0.2rem 0.2rem;
+  position: relative;
+  top: 0.4rem;
+}
+
+.contextMenu li:hover > .select {
+  background-image: url("../../assets/icons/context-menu/select-white.png");
+}
+
+.contextMenu li:hover > .hide {
+  background-image: url("../../assets/icons/context-menu/hide-white.png");
+}
+
+.contextMenu li:hover > .delete {
+  background-image: url("../../assets/icons/context-menu/delete-white.png");
 }

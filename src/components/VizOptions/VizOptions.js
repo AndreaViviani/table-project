@@ -155,29 +155,32 @@ function VizOptions() {
         return loadedKeys.map((col) => {
             return {
                 Header: <>
-
                         <div ref={(r) => { handleRef(r) }} className={style.headerCell} onContextMenu={(e) => { displayContextMenu(e, col.accessor) }} onClick={(e) => { hideAllContext() }}>
                             {
                                 checkIfContext(col.accessor) &&
                                 <ul onClick={(e) => { e.stopPropagation() }} style={{ position: "absolute", top: findContextCoord(col.accessor)[0], left: findContextCoord(col.accessor)[1], background: "#fff" }} className={style.contextMenu}>
                                     {
                                         !checkIfColumnIsSelected(col.id) &&
-                                        <li>
-                                            <div onClick={(e) => { displayContextMenu(e, col.accessor); selectColClick(e, col.id) }} className={style.buttonSelect}>Select</div>
+                                        <li onClick={(e) => { displayContextMenu(e, col.accessor); selectColClick(e, col.id) }}>
+                                            <div className={style.actionLabel} >Select</div>
+                                            <div className={`${style.actionIcon} ${style.select}`}></div>
                                         </li>
                                     }
                                     {
                                         checkIfColumnIsSelected(col.id) &&
-                                        <li>
-                                            <div onClick={(e) => { displayContextMenu(e, col.accessor); deselectColClick(e, col.id) }} className={style.buttonSelect}>Deselect</div>
+                                        <li onClick={(e) => { displayContextMenu(e, col.accessor); deselectColClick(e, col.id) }}>
+                                            <div className={style.actionLabel} >Deselect</div>
+                                            <div className={`${style.actionIcon} ${style.select}`}></div>
                                         </li>
                                     }
 
-                                    <li>
-                                        <div onClick={(e) => { displayContextMenu(e, col.accessor); deleteContext(col.accessor); dispatchHideCol(col.id) }} className={style.buttonSelect}>Hide</div>
+                                    <li onClick={(e) => { displayContextMenu(e, col.accessor); deleteContext(col.accessor); dispatchHideCol(col.id) }}>
+                                        <div className={style.actionLabel}  >Hide</div>
+                                        <div className={`${style.actionIcon} ${style.hide}`}></div>
                                     </li>
-                                    <li>
-                                        <div onClick={(e) => { displayContextMenu(e, col.accessor); deleteCol(col.id) }} className={style.buttonSelect}>Delete</div>
+                                    <li  onClick={(e) => { displayContextMenu(e, col.accessor); deleteCol(col.id) }} >
+                                        <div className={style.actionLabel}>Delete</div>
+                                        <div className={`${style.actionIcon} ${style.delete}`}></div>
                                     </li>
                                 </ul>
                             }
@@ -185,12 +188,12 @@ function VizOptions() {
                             {
                                 checkIfColumnIsSelected(col.id) &&
                                 <div className={style.selectedDiv}>
-                                    Selected
+                                    
                         </div>
                             }
                             {
                                 !checkIfColumnIsSelected(col.id) &&
-                                <div className={style.selectedDiv}>
+                                <div className={style.unSelectedDiv}>
 
                                 </div>
                             }
