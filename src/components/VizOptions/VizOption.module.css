@@ -30,20 +30,6 @@
   align-items: flex-start;
 }
 
-button {
-  font-size: 16px;
-  background-color: #388a7f;
-  font-weight: bold;
-  color: #fff;
-  display: inline-block;
-  border-radius: 2px;
-  border: none;
-  margin: 0 10px;
-  padding: 5px 15px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  z-index: 1000;
-}
 /*context menu styles*/
 .contextMenu {
   background-color: #ffffff;

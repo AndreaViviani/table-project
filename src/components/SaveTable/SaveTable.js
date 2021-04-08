@@ -23,7 +23,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box p={3}>
-          <Typography>{children}</Typography>
+          <Typography component={'span'}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
   },
+  
 }));
 
 
@@ -57,6 +58,8 @@ function SaveTable() {
   const loadedTable = useSelector(state => state.loadedTable);
 
   const loadedName = useSelector(state => state.loadedName)
+
+  const loadedKeys = useSelector(state => state.loadedKeys);
 
   const [toSaveName, setToSaveName] = React.useState(loadedName);
 
@@ -70,17 +73,39 @@ function SaveTable() {
 
   const [isTableOverWritten, setIsTableOverWritten] = React.useState(false);
 
-  React.useEffect(()=>{
+
+  React.useEffect(() => {
     setToSaveName(loadedName);
     setNameIsTaken(false);
     setTableIsSaved(false);
     setIsTableOverWritten(false);
   }, [popUpIsOpen])
 
+
+  function removeCircularReference(data) {
+    let dataToSave = {};
+    console.log(data);
+    Object.assign(dataToSave, data);
+    const keys = loadedKeys.map((col) => {
+      return col.id;
+    })
+    for (let i = 0; i < data.length; i++) {
+      let newRow = {};
+      Object.assign(newRow, data[i]);
+      for (const cell of keys) {
+        if ((typeof (data[i][cell] !== String) || typeof (data[i][cell] !== Number))) {
+          newRow[cell] = "";
+        }
+      }
+      dataToSave[i] = newRow
+    }
+    return dataToSave;
+  }
+
   //Facciamo una funzione per salvare la tabella, dovrà inviare una post (con axios) al server */
   function handleSave() {
     axios.post(`http://localhost:3001/save/${toSaveName}`, {
-      data: loadedTable,
+      data: removeCircularReference(loadedTable),
     })
       .then((res) => {
         if (res.data.nameIsTaken) {
@@ -97,7 +122,7 @@ function SaveTable() {
 
   function handleSaveForce() {
     axios.post(`http://localhost:3001/save/force/${toSaveName}`, {
-      data: loadedTable,
+      data: removeCircularReference(loadedTable),
     })
       .then((res) => {
         if (res.data.nameIsTaken && res.data.success) {
@@ -123,8 +148,6 @@ function SaveTable() {
     setValue(newValue);
   };
 
-
-
   return (
     <>{
       popUpIsOpen &&
@@ -133,7 +156,7 @@ function SaveTable() {
           {!saveAs &&
             <div className={classes.root}>
               <AppBar position="static" className={style.appBar}>
-                <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+                <Tabs TabIndicatorProps={{style: {background:'#042650'}}} value={value} className={classes.overrides} onChange={handleChange} aria-label="simple tabs example">
                   <Tab className={style.tab} label="Save" {...a11yProps(0)} />
                   <Tab className={style.tab} label="Save as" {...a11yProps(1)} />
 
@@ -159,11 +182,11 @@ function SaveTable() {
                     <p>
                       <b>{loadedName}</b> already exist. Do you want to overwrite your table?
                   </p>
-                    <button onClick={(e) => {setIsTableOverWritten(false); setTableIsSaved(false); handleChange(e, 1); }}>
+                    <button className ={"secondaryButton"} onClick={(e) => { setIsTableOverWritten(false); setTableIsSaved(false); handleChange(e, 1); }}>
                       No
                   </button>
 
-                    <button onClick={(e) => { handleSaveForce() }}>
+                    <button className={style.saveButton} style={{margin:0}} onClick={(e) => { handleSaveForce() }}>
                       Yes
                   </button>
                   </>
@@ -197,29 +220,29 @@ function SaveTable() {
               </TabPanel>
               <TabPanel value={value} index={1}>
                 {
-                  nameIsTaken && 
+                  nameIsTaken &&
                   <p>
                     Choosen name is taken, please choose another name.
                   </p>
                 }
                 {
-                   !tableIsSaved && 
-                   <>
-                   <label>
-                     Choose a name to save your table: </label>
-                   <input type="text" onChange={(e)=>{setToSaveName(e.target.value)}} placeholder="my-table"/>
-                   <button className={style.saveButton} onClick={(e) => {handleSave()}}>
-                     Save
+                  !tableIsSaved &&
+                  <>
+                    <label>
+                      Choose a name to save your table: </label>
+                    <input type="text" onChange={(e) => { setToSaveName(e.target.value) }} placeholder="my-table" />
+                    <button className={style.saveButton} onClick={(e) => { handleSave() }}>
+                      Save
                    </button>
-                   </>
+                  </>
                 }
                 {
                   tableIsSaved &&
-                  <> 
-                  <p>
-                    Table {toSaveName} saved successfully.
+                  <>
+                    <p>
+                      Table {toSaveName} saved successfully.
                   </p>
-                  <button onClick={(e) => { setPopUpIsOpen(false); setIsTableOverWritten(false); setNameIsTaken(false); setTableIsSaved(false) }} className={style.saveButton}>
+                    <button onClick={(e) => { setPopUpIsOpen(false); setIsTableOverWritten(false); setNameIsTaken(false); setTableIsSaved(false) }} className={style.saveButton}>
                       Ok
                   </button>
                   </>

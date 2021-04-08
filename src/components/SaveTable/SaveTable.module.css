@@ -3,7 +3,7 @@
     border-radius:4rem;
 }
 .appBar {
-    background-color: #388a7f;
+    background-color: #388a7f !important;
 }
 .saveButton{
     margin: 2rem 0 0 0;

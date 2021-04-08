@@ -363,6 +363,36 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
+button {
+  font-size: 16px;
+  background-color: #388a7f;
+  font-weight: bold;
+  color: #fff;
+  display: inline-block;
+  border-radius: 2px;
+  border: none;
+  margin: 0 10px;
+  padding: 5px 15px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.secondaryButton {
+  font-size: 16px;
+  background-color: #fff;
+  font-weight: bold;
+  color: #388a7f;
+  display: inline-block;
+  border-radius: 2px;
+  border: 2px solid #388a7f;
+  margin: 0 10px;
+  padding: calc(5px - 2px)  calc(15px - 2px);
+  margin-bottom: 10px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
 /*Imput styles*/
 
 input {
@@ -489,7 +519,7 @@ input[type="checkbox"]:checked + span {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index:3;
+  z-index:5;
 }
 .panel{
   background-color: white;
@@ -498,9 +528,15 @@ input[type="checkbox"]:checked + span {
   z-index:200;
   display: inline-block;
   width:600px;
-  z-index:5;
+  z-index:6;
 }
 
 .addedCol{
   background-color: #e1f6ff;
+}
+
+/*Material styles*/
+
+.MuiAppBar-colorPrimary{
+  background-color: #388a7f;
 }

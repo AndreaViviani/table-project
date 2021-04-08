@@ -13,9 +13,8 @@ function FillRow(props) {
     const [panelIsLoading, setPanelIsLoading] = React.useState(false);
     const [cities, setCities] = React.useState([]);
     const [areNoCities, setAreNoCities] = React.useState(false);
-
     const [formattedCities, setFormattedCities] = React.useState([]);
-
+    const [manualCity, setManualCity] = React.useState("");
     const loadedTable = useSelector(state => state.loadedTable);
 
     const dispatch = useDispatch();
@@ -35,6 +34,11 @@ function FillRow(props) {
         return 0;
     }
 
+    /*function elaborateCityName(city) {
+        const splittedCity = city.split(" ");
+        for (el of splitted)
+    }*/
+
     //ask the requested data and fill the table
     function fillRow(city, row) {
         const data = row.data;
@@ -43,7 +47,6 @@ function FillRow(props) {
         let year = splittedData[0];
         let month = splittedData[1];
         let day = splittedData[2].split('T')[0];
-        onTableLoadingChange(true);
         axios.get(`http://localhost:3001/meteo/single-line/${city}/${year}/${month}/${day}`)
             .then((res) => {
                 //now i update my table data
@@ -53,13 +56,12 @@ function FillRow(props) {
                 const newLoadedTable = loadedTable;
                 for (let i = 0; i < newLoadedTable.length; i++) {
                     if (newLoadedTable[i].denominazione_provincia === provincia) {
-                        dispatchUpdate(i, res.data);
                         /*const myNewObj = { ...newLoadedTable[i], ...res.data };
                         newLoadedTable[i] = myNewObj;
                         console.log(newLoadedTable);
                         dispatchLoad(newLoadedTable);*/
                         setPanelIsOpen(false);
-                        onTableLoadingChange(false);
+                        dispatchUpdate(i, res.data);
                         break;
                     }
                 }
@@ -87,25 +89,26 @@ function FillRow(props) {
     React.useEffect(() => {
         if (panelIsOpen) {
             document.body.style.overflow = "hidden";
-            window.scrollTo(0,0);
+            window.scrollTo(0, 0);
         } else {
             document.body.style.overflow = "scroll";
         }
     }, [panelIsOpen])
 
     //i'll use this function to add data to empty row
-    function addData(row) {
-        console.log('ciao');
+    function addData(row, city = "") {
+        setPanelIsLoading(true);
+        city = city.charAt(0).toUpperCase() + city.slice(1);
         const data = row.data;
         const splittedData = data.split('-');
-        let regione = row.denominazione_regione;
-        let provincia = row.denominazione_provincia;
+        let provincia = city || row.denominazione_provincia;
         let year = splittedData[0];
         let month = splittedData[1];
         let day = splittedData[2].split('T')[0];
-        const url = `http://localhost:3001/get-options/meteo/${provincia}/${year}/${month}/${day}/10`;
+        const url = `http://localhost:3001/get-options/meteo/${provincia}/${year}/${month}/${day}`;
         axios.get(url)
             .then((res) => {
+                console.log(res.data);
                 if (res.data.error === "no cities found") {
                     setPanelIsLoading(false);
                     setAreNoCities(true);
@@ -114,6 +117,7 @@ function FillRow(props) {
                     alert("Si è verificato un errore, ritenta più tardi");
                     setPanelIsOpen(false);
                 } else {
+                    setAreNoCities(false);
                     setCities(res.data);
                     setPanelIsLoading(false);
                 }
@@ -132,9 +136,12 @@ function FillRow(props) {
                         {!panelIsLoading && !areNoCities &&
                             <>
                                 <h3>
-                                    Choose city:
+                                    Choose city
                                 </h3>
                                 {formattedCities}
+                                <h3>
+                                    or
+                                </h3>
                             </>
                         }
                         {panelIsLoading &&
@@ -150,7 +157,23 @@ function FillRow(props) {
                         }{
                             !panelIsLoading && areNoCities &&
                             <>
-                            Non sono presenti città con il nome {row.denominazione_provincia}
+                                <h3>
+                                    Non sono presenti città con questo nome.
+                            </h3>
+
+                            </>
+                        }
+                        {
+                            !panelIsLoading &&
+
+                            <>
+                                <div className={style.left}>
+                                    <label >Insert city name: </label>
+                                    < input onChange={(e) => { setManualCity(e.target.value) }} placeholder={"Milano"} />
+                                    <button onClick={(e) => { console.log("ciao"); e.stopPropagation(); addData(row, manualCity) }}>Search</button>
+                                </div>
+
+
                             </>
                         }
 
@@ -158,7 +181,7 @@ function FillRow(props) {
                 </div>
             }
 
-            <div className={style.add} onClick={(e) => { e.stopPropagation(); setPanelIsLoading(true); setPanelIsOpen(true); addData(row); }}></div>
+            <div className={style.add} onClick={(e) => { e.stopPropagation(); setPanelIsOpen(true); addData(row); }}></div>
         </>
     )
 }
