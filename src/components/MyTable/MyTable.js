@@ -1,16 +1,21 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import style from "./MyTable.module.css";
 import React from "react";
 import { useTable, usePagination, useSortBy } from "react-table";
-import axios from "axios";
+
 
 function MyTable() {
 
     const allColumns = useSelector(state => state.loadedKeys);
     const allData = useSelector(state => state.loadedTable);
+    
 
     const [columns, setColumns] = React.useState([]);
     const [data, setData] = React.useState([]);
+
+    const dispatch = useDispatch();
+
+    
 
 
     React.useEffect(() => {
@@ -44,6 +49,7 @@ function MyTable() {
             columns,
             data,
             initialState: { pageIndex: 0, hiddenColumns: columns.filter(column => !column.show).map(column => column.id) },
+            autoResetPage: false
         },
         useSortBy,
         usePagination,
@@ -62,10 +68,6 @@ function MyTable() {
         [columns]
     );
 
-    // sincronizing pageindex to return to the same page whan i modify table
-    React.useEffect(()=>{
-
-    },[pageIndex])
 
     // questo timeout serve per evitare un bug che non sono riuscito ad evitare altrimenti,
     // senza questo, al refresh della pagina la tabella non riesce a reperire le props delle colonne per tempo e da errore
