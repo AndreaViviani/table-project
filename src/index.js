@@ -4,15 +4,12 @@ import './index.css';
 import App from './views/App/App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from "react-redux";
+import returnStoreAndPersistor from './reduxStateManager/store';
 import store from "./reduxStateManager/store";
-
-
-
-
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+      <App />
   </Provider>,
   document.getElementById('root')
 );

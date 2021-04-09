@@ -21,8 +21,6 @@ function MyTable() {
         setColumns(allColumns)
     }, [allColumns])
 
-
-
     let hiddenColumns;
 
     const {
@@ -63,6 +61,11 @@ function MyTable() {
         },
         [columns]
     );
+
+    // sincronizing pageindex to return to the same page whan i modify table
+    React.useEffect(()=>{
+
+    },[pageIndex])
 
     // questo timeout serve per evitare un bug che non sono riuscito ad evitare altrimenti,
     // senza questo, al refresh della pagina la tabella non riesce a reperire le props delle colonne per tempo e da errore

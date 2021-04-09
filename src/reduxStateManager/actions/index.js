@@ -97,3 +97,10 @@ export const setHasBeenExtended = (value) =>{
         value,
     }
 }
+
+export const setIsEditable = (value) => {
+    return{
+        type: "EDIT",
+        value,
+    }
+}

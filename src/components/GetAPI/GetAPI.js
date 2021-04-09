@@ -119,9 +119,9 @@ function GetAPI() {
                 console.log(`http://localhost:3001/meteo/${region}/${year}/${month}/${day}`);
                 axios.get(`http://localhost:3001/meteo/${region}/${year}/${month}/${day}`)
                     .then((res) => {
+                        dispatchDeleteSel();
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
-                        dispatchDeleteSel();
                         dispatchLoadName(`meteo_${region}_${day}-${month}-${year}`);
                         dispatchExtended(false);
                         setIsLoaded("Loaded");
@@ -136,9 +136,9 @@ function GetAPI() {
                 console.log('ciao');
                 axios.get(`http://localhost:3001/covid/${region}/${year}/${month}/${day}`)
                     .then((res) => {
+                        dispatchDeleteSel();
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
-                        dispatchDeleteSel();
                         dispatchLoadName(`Covid_${region}_${day}-${month}-${year}`);
                         dispatchExtended(false);
                         setIsLoaded("Loaded");
@@ -152,10 +152,9 @@ function GetAPI() {
                 setIsLoaded("loading");
                 axios.get(`http://localhost:3001/saved/${savedName}`)
                     .then((res) => {
-                        console.log(res.data.data);
+                        dispatchDeleteSel();
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
-                        dispatchDeleteSel();
                         dispatchLoadName(`${savedName}`);
                         dispatchExtended(false);
                         setIsLoaded("Loaded");
@@ -175,25 +174,25 @@ function GetAPI() {
             .then((res) => {
                 switch (format) {
                     case "JSON":
+                        dispatchDeleteSel();
                         dispatchLoad(res.data.data);
                         dispatchKeys(createKeys(res.data.data));
-                        dispatchDeleteSel();
                         dispatchLoadName(extName);
                         dispatchExtended(false);
                         setIsLoaded("Loaded");
                         break;
                     case "CSV":
+                        dispatchDeleteSel();
                         dispatchLoad(csvJSON(res.data.data));
                         dispatchKeys(createKeys(csvJSON(res.data.data)));
-                        dispatchDeleteSel();
                         dispatchLoadName(extName);
                         dispatchExtended(false);
                         setIsLoaded("Loaded");
                         break;
                     case "SSV":
+                        dispatchDeleteSel();
                         dispatchLoad(ssvJSON(res.data.data));
                         dispatchKeys(createKeys(ssvJSON(res.data.data)));
-                        dispatchDeleteSel();
                         dispatchLoadName(extName);
                         dispatchExtended(false);
                         setIsLoaded("Loaded");

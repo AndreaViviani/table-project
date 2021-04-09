@@ -4,6 +4,7 @@ import loadKeysReducer from "./LoadKeys";
 import selectColReducer from "./SelectCol";
 import loadNameReducer from "./LoadName";
 import hasExtendedReducer from "./HasExtended";
+import setIsEditableReduces from "./IsEditable";
 
 
 const allReducers = combineReducers({
@@ -12,6 +13,7 @@ const allReducers = combineReducers({
     selectedCol : selectColReducer,
     loadedName : loadNameReducer,
     hasExtended : hasExtendedReducer,
+    isEditable : setIsEditableReduces,
 })
 
 export default allReducers;

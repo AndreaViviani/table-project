@@ -81,13 +81,12 @@ function GetLocal() {
                 default:
                     convertedFile = jsonJSON(unconverteFile);
             }
-            console.log(convertedFile);
+            dispatchDeleteSel();
             dispatchLoad(convertedFile);
             setLoadingState("Loaded");
             dispatchKeys(createKeys(convertedFile));
             dispatchLoadName(fileName);
             dispatchExtended(false);
-            dispatchDeleteSel();
         }
         reader.readAsText(file);
     }

@@ -1,5 +1,5 @@
 import style from "./SaveTable.module.css";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import React from "react";
 import AppBar from '@material-ui/core/AppBar';
@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import removeCircularReference from "../../logicModules/removeCircularReference/removeCircularReference";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -61,6 +62,8 @@ function SaveTable() {
 
   const loadedKeys = useSelector(state => state.loadedKeys);
 
+  const isEditable = useSelector(state => state.isEditable);
+
   const [toSaveName, setToSaveName] = React.useState(loadedName);
 
   const [popUpIsOpen, setPopUpIsOpen] = React.useState(false);
@@ -82,30 +85,10 @@ function SaveTable() {
   }, [popUpIsOpen])
 
 
-  function removeCircularReference(data) {
-    let dataToSave = {};
-    console.log(data);
-    Object.assign(dataToSave, data);
-    const keys = loadedKeys.map((col) => {
-      return col.id;
-    })
-    for (let i = 0; i < data.length; i++) {
-      let newRow = {};
-      Object.assign(newRow, data[i]);
-      for (const cell of keys) {
-        if ((typeof (data[i][cell] !== String) || typeof (data[i][cell] !== Number))) {
-          newRow[cell] = "";
-        }
-      }
-      dataToSave[i] = newRow
-    }
-    return dataToSave;
-  }
-
   //Facciamo una funzione per salvare la tabella, dovrà inviare una post (con axios) al server */
   function handleSave() {
     axios.post(`http://localhost:3001/save/${toSaveName}`, {
-      data: removeCircularReference(loadedTable),
+      data: loadedTable,
     })
       .then((res) => {
         if (res.data.nameIsTaken) {
@@ -122,7 +105,7 @@ function SaveTable() {
 
   function handleSaveForce() {
     axios.post(`http://localhost:3001/save/force/${toSaveName}`, {
-      data: removeCircularReference(loadedTable),
+      data: loadedTable,
     })
       .then((res) => {
         if (res.data.nameIsTaken && res.data.success) {
@@ -258,7 +241,7 @@ function SaveTable() {
       </div>
     }
 
-      <button onClick={(e) => { setPopUpIsOpen(!popUpIsOpen); setTableIsSaved(false) }}>Save Table</button>
+      <button disabled = {isEditable} onClick={(e) => { setPopUpIsOpen(!popUpIsOpen); setTableIsSaved(false) }}>Save Table</button>
     </>
   )
 }

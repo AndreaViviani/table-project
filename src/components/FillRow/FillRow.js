@@ -7,6 +7,7 @@ import { updateRow } from "../../reduxStateManager/actions";
 
 function FillRow(props) {
 
+    //const { rowIndex, isTableLoading, onTableLoadingChange } = props;
     const { row, isTableLoading, onTableLoadingChange } = props;
 
     const [panelIsOpen, setPanelIsOpen] = React.useState(false);
@@ -17,8 +18,12 @@ function FillRow(props) {
     const [manualCity, setManualCity] = React.useState("");
 
 
+
+
     const loadedTable = useSelector(state => state.loadedTable);
     const loadedKeys = useSelector(state => state.loadedKeys);
+
+    //const row = loadedTable[rowIndex];
 
     const dispatch = useDispatch();
 
@@ -59,7 +64,7 @@ function FillRow(props) {
                 const newLoadedTable = loadedTable;
                 for (let i = 0; i < newLoadedTable.length; i++) {
                     if (newLoadedTable[i].denominazione_provincia === provincia) {
-                        
+
                         let myNewObj = {};
                         myNewObj = { ...loadedTable[i], ...res.data };
                         setPanelIsOpen(false);

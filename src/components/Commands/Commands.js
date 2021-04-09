@@ -4,6 +4,7 @@ import style from "./Commands.module.css";
 import { useSelector } from "react-redux";
 import React from "react";
 import SaveTable from "../SaveTable/SaveTable";
+import EditEmptyRows from "../EditEmptyRows/EditEmptyRows";
 
 function Commands (props) {
 
@@ -15,9 +16,6 @@ function Commands (props) {
     const selectedCol = useSelector(state => state.selectedCol);
     const loadedName = useSelector(state => state.loadedName);
     const loadedTable = useSelector(state => state.loadedTable);
-
-
-
 
     return(
         <div className={style.toVisualDiv}>
@@ -35,12 +33,12 @@ function Commands (props) {
                     <ShowHide className={style.commandsButton}>
 
                     </ShowHide>
+                    <EditEmptyRows isTableLoading={isTableLoading} onTableLoadingChange={(isTableLoading) => { onTableLoadingChange(isTableLoading) }} >
+
+                    </EditEmptyRows>
                     <SaveTable>
                         
                     </SaveTable>
-                    <div onClick={(e)=>{console.log(loadedTable)}}>
-                        Console table
-                    </div>
                 </div>
             </div>
     )

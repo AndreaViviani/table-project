@@ -8,7 +8,6 @@ const loadKeysReducer = ( state = null, action ) => {
     const previousState = state;
     switch(action.type) {
         case "LOADKEYS":
-            console.log("carico");
             return state = keysToLoad;
         case "HIDE":
             let indexToHide = null;

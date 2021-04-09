@@ -1,8 +1,9 @@
 import React from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
-import { loadTable, loadKeys, updateRow, setHasBeenExtended } from "../../reduxStateManager/actions";
+import { loadTable, loadKeys, updateRow, setHasBeenExtended, setIsEditable } from "../../reduxStateManager/actions";
 import FillRow from "../FillRow/FillRow";
+import removeCircularReference from "../../logicModules/removeCircularReference/removeCircularReference";
 
 
 function MergeTable(props) {
@@ -46,26 +47,16 @@ function MergeTable(props) {
         dispatch(setHasBeenExtended(value));
     }
 
+    const dispatchEditable = (value) => {
+        dispatch(setIsEditable(value));
+    }
+
     // this useffect add button to fill rows with data 
     React.useEffect(() => {
         if (hasExtended) {
-            const cells = []
-            for (const col of loadedKeys) {
-                cells.push(col.accessor);
-            }
-            for (let i = 0; i < loadedTable.length; i++) {
-                let newRow = {};
-                Object.assign(newRow, loadedTable[i]);
-                for (const cell of cells) {
-                    if (!loadedTable[i][cell]) {
-                        newRow[cell] = <FillRow row={newRow} isTableLoading={isTableLoading} onTableLoadingChange={(isTableLoading) => { onTableLoadingChange(isTableLoading) }}></FillRow>;
-                    }
-                }
-                dispatchUpdate(i, newRow);
-            }
+            dispatchEditable(true);
         } else {
             //when click to uniform to set unextended i want to uniform header column
-            console.log("ciao");
             dispatchKeys((loadedKeys).map((key) => {
                 return {
                     Header: key.Header,
@@ -76,6 +67,10 @@ function MergeTable(props) {
                     added: false,
                 }
             }));
+            dispatchEditable(false);
+            // when i uniform table i want to remove also circular reference
+            //const tableWithoutRef = removeCircularReference(loadedTable, loadedKeys);
+            //dispatchLoad(tableWithoutRef);
         }
 
     }, [hasExtended])
@@ -199,7 +194,7 @@ function MergeTable(props) {
             </div>
         }{
                 hasExtended &&
-                <button onClick={(e) => { dispatchExtended(false); setWantToExtend(false) }}>Uniform table</button>
+                <button className={"secondaryButton"} onClick={(e) => { dispatchExtended(false); setWantToExtend(false) }}>Uniform table</button>
             }
 
         </>
