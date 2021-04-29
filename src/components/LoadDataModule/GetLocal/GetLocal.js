@@ -1,8 +1,8 @@
 import React from "react";
 import style from "./GelLocal.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { loadTable, loadKeys, delSel, loadName, setHasBeenExtended } from "../../reduxStateManager/actions";
-import { csvJSON, ssvJSON, jsonJSON} from "./../../logicModules/formatConverter/converter";
+import { loadTable, loadKeys, delSel, loadName, setHasBeenExtended } from "../../../reduxStateManager/actions";
+import { csvJSON, ssvJSON, jsonJSON} from "../../../logicModules/formatConverter/converter";
 import Loader from "react-loader-spinner";
 import { Link } from "react-router-dom";
 

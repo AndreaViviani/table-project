@@ -8,6 +8,7 @@ const loadedTableReducer = (state = null, action)=>{
     const previousState = state;
     switch(action.type){
         case "LOAD":
+            console.log(dataToLoad);
             return state = dataToLoad;
         case "POP":
             const myNewState = state;
@@ -19,6 +20,7 @@ const loadedTableReducer = (state = null, action)=>{
             const nextHiddenState = produce(previousState, draftState => {
                 draftState[indexToUpdate] = rowToUpdate;
             })
+            console.log(nextHiddenState);
             return state = nextHiddenState;
         default:
             return state;

@@ -1,7 +1,7 @@
 import React from "react";
 import style from "./VizOption.module.css";
 import { useSelector, useDispatch } from "react-redux";
-import { loadKeys, hideCol, selectCol, deselectCol, popColData, popCol, popColSel } from "../../reduxStateManager/actions";
+import { loadKeys, hideCol, selectCol, deselectCol, popColData, popCol, popColSel } from "../../../reduxStateManager/actions";
 
 
 

@@ -1,9 +1,8 @@
 import React from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
-import { loadTable, loadKeys, updateRow, setHasBeenExtended, setIsEditable } from "../../reduxStateManager/actions";
-import FillRow from "../FillRow/FillRow";
-import removeCircularReference from "../../logicModules/removeCircularReference/removeCircularReference";
+import { loadTable, loadKeys, updateRow, setHasBeenExtended, setIsEditable } from "../../../reduxStateManager/actions";
+
 
 
 function MergeTable(props) {

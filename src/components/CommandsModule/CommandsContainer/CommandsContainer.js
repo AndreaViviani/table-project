@@ -1,6 +1,6 @@
 import MergeTable from "../MergeTable/MergeTable";
 import ShowHide from "../ShowHide/ShowHide";
-import style from "./Commands.module.css";
+import style from "./CommandsContainer.module.css";
 import { useSelector } from "react-redux";
 import React from "react";
 import SaveTable from "../SaveTable/SaveTable";

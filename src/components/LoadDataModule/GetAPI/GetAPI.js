@@ -1,9 +1,9 @@
 import React from "react";
 import style from "./GetAPI.module.css";
-import { csvJSON, ssvJSON } from "../../logicModules/formatConverter/converter";
+import { csvJSON, ssvJSON } from "../../../logicModules/formatConverter/converter";
 import { useDispatch } from "react-redux";
 /*importo l'action per caricare i dati nel redux storage */
-import { loadTable, loadKeys, delSel, loadName, setHasBeenExtended } from "../../reduxStateManager/actions";
+import { loadTable, loadKeys, delSel, loadName, setHasBeenExtended } from "../../../reduxStateManager/actions";
 import axios from "axios";
 import Loader from "react-loader-spinner";
 import { Link } from "react-router-dom";

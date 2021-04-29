@@ -63,7 +63,7 @@
 }
 
 .selectedDiv {
-  background-image: url("../../assets/icons/th/selected-green.png");
+  background-image: url("../../../assets/icons/th/selected-green.png");
   background-position: center;
   background-size: 2rem 2rem;
   background-repeat: no-repeat;
@@ -95,7 +95,7 @@
 }
 
 .select {
-  background-image: url("../../assets/icons/context-menu/select-green.png");
+  background-image: url("../../../assets/icons/context-menu/select-green.png");
   background-size: 1em 1em;
   height: 1em;
   width: 1em;
@@ -105,7 +105,7 @@
 }
 
 .hide {
-  background-image: url("../../assets/icons/context-menu/hide-green.png");
+  background-image: url("../../../assets/icons/context-menu/hide-green.png");
   background-size: 1em 1em;
   height: 1em;
   width: 1em;
@@ -115,7 +115,7 @@
 }
 
 .delete {
-  background-image: url("../../assets/icons/context-menu/delete-green.png");
+  background-image: url("../../../assets/icons/context-menu/delete-green.png");
   background-size: 1em 1em;
   height: 1em;
   width: 1em;
@@ -125,13 +125,13 @@
 }
 
 .contextMenu li:hover > .select {
-  background-image: url("../../assets/icons/context-menu/select-white.png");
+  background-image: url("../../../assets/icons/context-menu/select-white.png");
 }
 
 .contextMenu li:hover > .hide {
-  background-image: url("../../assets/icons/context-menu/hide-white.png");
+  background-image: url("../../../assets/icons/context-menu/hide-white.png");
 }
 
 .contextMenu li:hover > .delete {
-  background-image: url("../../assets/icons/context-menu/delete-white.png");
+  background-image: url("../../../assets/icons/context-menu/delete-white.png");
 }

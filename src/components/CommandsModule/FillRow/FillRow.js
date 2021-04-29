@@ -3,7 +3,7 @@ import axios from "axios";
 import Loader from "react-loader-spinner";
 import style from "./FillRow.module.css";
 import { useSelector, useDispatch } from "react-redux";
-import { updateRow } from "../../reduxStateManager/actions";
+import { updateRow } from "../../../reduxStateManager/actions";
 
 function FillRow(props) {
 

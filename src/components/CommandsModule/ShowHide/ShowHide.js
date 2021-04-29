@@ -1,5 +1,5 @@
 import React from "react";
-import { hideCol, showCol } from "../../reduxStateManager/actions";
+import { hideCol, showCol } from "../../../reduxStateManager/actions";
 import { useSelector, useDispatch } from "react-redux";
 import style from "./ShowHide.module.css";
 

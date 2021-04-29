@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import removeCircularReference from "../../logicModules/removeCircularReference/removeCircularReference";
+import removeCircularReference from "../../../logicModules/removeCircularReference/removeCircularReference";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -104,7 +104,7 @@ function SaveTable() {
   }
 
   function handleSaveForce() {
-    axios.post(`http://localhost:3001/save/force/${toSaveName}`, {
+    axios.put(`http://localhost:3001/save/${toSaveName}`, {
       data: loadedTable,
     })
       .then((res) => {

@@ -1,8 +1,8 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import FillRow from "../FillRow/FillRow";
-import { updateRow, loadTable, setIsEditable } from "../../reduxStateManager/actions/index";
-import removeCircularReference from "../../logicModules/removeCircularReference/removeCircularReference";
+import { updateRow, loadTable, setIsEditable } from "../../../reduxStateManager/actions/index";
+import removeCircularReference from "../../../logicModules/removeCircularReference/removeCircularReference";
 
 function EditEmptyRows(props) {
 

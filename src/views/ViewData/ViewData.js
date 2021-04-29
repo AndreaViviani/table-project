@@ -1,8 +1,8 @@
-import ModOptions from "../../components/SaveTable/SaveTable";
-import MyTable from "../../components/MyTable/MyTable";
+
+import MyTable from "../../components/TableModule/MyTable/MyTable";
 import React from "react";
-import Commands from "../../components/Commands/Commands";
-import VizOptions from "../../components/VizOptions/VizOptions";
+import Commands from "../../components/CommandsModule/CommandsContainer/CommandsContainer";
+import VizOptions from "../../components/TableModule/VizOptions/VizOptions";
 import { useSelector } from "react-redux";
 import style from "./ViewData.module.css";
 import Loader from "react-loader-spinner";

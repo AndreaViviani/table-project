@@ -1,4 +1,4 @@
-import GetData from "./../../components/GetData/GetData";
+import GetData from "./../../components/LoadDataModule/GetData/GetData";
 import Tutorial from "./../../components/Tutorial/Tutorial";
 
 function Home () {
